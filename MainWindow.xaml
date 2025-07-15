@@ -8,5 +8,7 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
 
+        <Button Content="Registrar Documento" Click="BtnAbrirRegistro_Click" Width="200" Height="40"/>
+
     </Grid>
 </Window>

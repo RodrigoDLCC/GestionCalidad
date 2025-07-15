@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using GestionCalidad.Views;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,12 @@ namespace GestionCalidad
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void BtnAbrirRegistro_Click(object sender, RoutedEventArgs e)
+        {
+            var ventana = new RegistroDocumento();
+            ventana.ShowDialog();
         }
     }
 }

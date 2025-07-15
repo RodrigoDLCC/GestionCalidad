@@ -1,0 +1,48 @@
+﻿<Window x:Class="GestionCalidad.Views.RegistroDocumento"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GestionCalidad.Views"
+        mc:Ignorable="d"
+        Title="RegistroDocumento" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="10" VerticalAlignment="Top">
+
+            <TextBlock Text="Nombre del documento:"/>
+            <TextBox x:Name="txtNombre" Margin="0,5"/>
+
+            <TextBlock Text="Entidades relacionadas:" Margin="0,10,0,0"/>
+            <StackPanel Orientation="Vertical">
+                <CheckBox Content="SUNEDU" x:Name="chkSUNEDU"/>
+                <CheckBox Content="SINEACE" x:Name="chkSINEACE"/>
+                <CheckBox Content="ICACIT" x:Name="chkICACIT"/>
+                <CheckBox Content="ISO 9001 - Certhia" x:Name="chkISO"/>
+            </StackPanel>
+
+            <TextBlock Text="Tipo de documento:" Margin="0,10,0,0"/>
+            <ComboBox x:Name="cmbTipo" Margin="0,5">
+                <ComboBoxItem Content="Manual"/>
+                <ComboBoxItem Content="Informe"/>
+                <ComboBoxItem Content="Procedimiento"/>
+                <ComboBoxItem Content="Guía"/>
+            </ComboBox>
+
+            <TextBlock Text="Año:" Margin="0,10,0,0"/>
+            <TextBox x:Name="txtAnio" Margin="0,5"/>
+
+            <TextBlock Text="Área:"/>
+            <TextBox x:Name="txtArea" Margin="0,5"/>
+
+            <TextBlock Text="Usuario:"/>
+            <TextBox x:Name="txtUsuario" Margin="0,5"/>
+
+            <Button Content="Guardar" Click="BtnGuardar_Click" Margin="0,15,0,0" HorizontalAlignment="Center" Width="120"/>
+        </StackPanel>
+    </Grid>
+</Window>
