@@ -3,36 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\services\\googledriveservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:services\\googledriveservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\services\\mongoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:services\\mongoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\views\\registrodocumento.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:views\\registrodocumento.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\views\\registrodocumento.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:views\\registrodocumento.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\models\\documento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:models\\documento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -47,103 +19,13 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "GoogleDriveService.cs",
-              "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Services\\GoogleDriveService.cs",
-              "RelativeDocumentMoniker": "Services\\GoogleDriveService.cs",
-              "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Services\\GoogleDriveService.cs",
-              "RelativeToolTip": "Services\\GoogleDriveService.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAgwD0AAAA0AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T16:03:43.142Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\MainWindow.xaml",
-              "RelativeDocumentMoniker": "MainWindow.xaml",
-              "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\MainWindow.xaml",
-              "RelativeToolTip": "MainWindow.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-07-15T14:56:27.005Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\MainWindow.xaml.cs",
-              "RelativeDocumentMoniker": "MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\MainWindow.xaml.cs",
-              "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T14:56:03.014Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "RegistroDocumento.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\RegistroDocumento.xaml.cs",
-              "RelativeDocumentMoniker": "Views\\RegistroDocumento.xaml.cs",
-              "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\RegistroDocumento.xaml.cs",
-              "RelativeToolTip": "Views\\RegistroDocumento.xaml.cs",
-              "ViewState": "AgIAABkAAAAAAAAAAAAswDIAAABSAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T14:49:15.257Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "RegistroDocumento.xaml",
               "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\RegistroDocumento.xaml",
               "RelativeDocumentMoniker": "Views\\RegistroDocumento.xaml",
               "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\RegistroDocumento.xaml",
               "RelativeToolTip": "Views\\RegistroDocumento.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-07-15T14:47:34.951Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MongoService.cs",
-              "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Services\\MongoService.cs",
-              "RelativeDocumentMoniker": "Services\\MongoService.cs",
-              "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Services\\MongoService.cs",
-              "RelativeToolTip": "Services\\MongoService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T13:18:01.139Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Usuario.cs",
-              "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Models\\Usuario.cs",
-              "RelativeDocumentMoniker": "Models\\Usuario.cs",
-              "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Models\\Usuario.cs",
-              "RelativeToolTip": "Models\\Usuario.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAABUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T13:07:46.322Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Documento.cs",
-              "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Models\\Documento.cs",
-              "RelativeDocumentMoniker": "Models\\Documento.cs",
-              "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Models\\Documento.cs",
-              "RelativeToolTip": "Models\\Documento.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T13:06:38.107Z",
+              "WhenOpened": "2025-07-15T18:20:54.103Z",
               "EditorCaption": ""
             }
           ]
