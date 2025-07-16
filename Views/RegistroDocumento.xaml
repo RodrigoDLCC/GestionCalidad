@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionCalidad.Views"
         mc:Ignorable="d"
-        Title="RegistroDocumento" Height="450" Width="800">
+        Title="RegistroDocumento" Height="493" Width="805">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -33,14 +33,20 @@
                 <ComboBoxItem Content="Guía"/>
             </ComboBox>
 
-            <TextBlock Text="Año:" Margin="0,10,0,0"/>
-            <TextBox x:Name="txtAnio" Margin="0,5"/>
+            <TextBlock Text="Fecha del documento:" Margin="0,10,0,0"/>
+            <DatePicker x:Name="dpFechaDocumento" Margin="0,5" SelectedDateFormat="Short"/>
 
             <TextBlock Text="Área:"/>
             <TextBox x:Name="txtArea" Margin="0,5"/>
 
             <TextBlock Text="Usuario:"/>
             <TextBox x:Name="txtUsuario" Margin="0,5"/>
+
+            <TextBlock Text="Archivo a subir:" Margin="0,10,0,0"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="txtRutaArchivo" Width="280" IsReadOnly="True"/>
+                <Button Content="..." Click="BtnSeleccionarArchivo_Click" Width="30" Margin="5,0"/>
+            </StackPanel>
 
             <Button Content="Guardar" Click="BtnGuardar_Click" Margin="0,15,0,0" HorizontalAlignment="Center" Width="120"/>
         </StackPanel>

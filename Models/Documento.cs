@@ -17,12 +17,13 @@ namespace GestionCalidad.Models
         public string Nombre { get; set; }
 
         [BsonElement("Entidades")]
-        public List<string> Entidades { get; set; }  // Ej: ["SUNEDU", "ISO 9001"]
+        public List<string> Entidades { get; set; }
 
-        public string Tipo { get; set; }             // Manual, Informe, etc.
+        public string Tipo { get; set; }
         public int Año { get; set; }
+        public DateTime FechaDocumento { get; set; }
         public string Area { get; set; }
-        public string Usuario { get; set; }          // Usuario que subió el archivo
+        public string Usuario { get; set; }
         public DateTime FechaSubida { get; set; }
 
         public string EnlaceDrive { get; set; }

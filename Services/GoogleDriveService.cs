@@ -23,7 +23,7 @@ namespace GestionCalidad.Services
         {
             UserCredential credential;
 
-            using (var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gestiongeca-credentials.json"), FileMode.Open, FileAccess.Read))
             {
                 string credPath = "token.json";
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
@@ -41,32 +41,55 @@ namespace GestionCalidad.Services
             });
         }
 
-        public async Task<string> SubirArchivoAsync(string filePath)
+        public async Task<(string WebLink, string FileId)> SubirArchivoAsync(string filePath, string folderId)
         {
             if (_service == null)
                 await InicializarAsync();
 
             var fileMetadata = new Google.Apis.Drive.v3.Data.File()
             {
-                Name = Path.GetFileName(filePath)
+                Name = Path.GetFileName(filePath),
+                Parents = new List<string> { folderId }
             };
 
-            using (var stream = new FileStream(filePath, FileMode.Open))
+            try
             {
-                var request = _service.Files.Create(fileMetadata, stream, "application/octet-stream");
-                request.Fields = "id, webViewLink";
-                var result = await request.UploadAsync();
+                using (var stream = new FileStream(filePath, FileMode.Open))
+                {
+                    var request = _service.Files.Create(fileMetadata, stream, "application/octet-stream");
+                    request.Fields = "id, webViewLink";
+                    var result = await request.UploadAsync();
 
-                if (result.Status == UploadStatus.Completed)
-                {
-                    var file = request.ResponseBody;
-                    return file.WebViewLink; // También puedes guardar file.Id si lo necesitas
-                }
-                else
-                {
-                    throw new Exception("Error al subir archivo a Drive");
+                    if (result.Status == UploadStatus.Completed)
+                    {
+                        var file = request.ResponseBody;
+                        return (file.WebViewLink, file.Id);
+                    }
+                    else
+                    {
+                        throw new Exception($"Upload error: {result.Exception?.Message ?? "Estado inesperado"}");
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al subir archivo a Drive: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task HacerArchivoPublicoAsync(string fileId)
+        {
+            if (_service == null)
+                await InicializarAsync();
+
+            var permission = new Google.Apis.Drive.v3.Data.Permission
+            {
+                Type = "anyone",
+                Role = "reader"
+            };
+
+            await _service.Permissions.Create(permission, fileId).ExecuteAsync();
         }
     }
 }
