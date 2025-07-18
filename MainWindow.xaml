@@ -7,8 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" >
+            <Button Content="Registrar Documento" 
+                Click="BtnAbrirRegistro_Click" 
+                Width="200" Height="40" Margin="0,0,0,10"/>
 
-        <Button Content="Registrar Documento" Click="BtnAbrirRegistro_Click" Width="200" Height="40"/>
-
+            <Button Content="Listar Documentos" 
+                Click="BtnAbrirListado_Click" 
+                Width="200" Height="40"/>
+        </StackPanel>
     </Grid>
 </Window>

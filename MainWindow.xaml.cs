@@ -27,5 +27,10 @@ namespace GestionCalidad
             var ventana = new RegistroDocumento();
             ventana.ShowDialog();
         }
+        private void BtnAbrirListado_Click(object sender, RoutedEventArgs e)
+        {
+            var ventana = new DashboardPrincipal("Rodrigo");
+            ventana.ShowDialog();
+        }
     }
 }

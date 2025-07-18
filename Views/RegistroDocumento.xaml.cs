@@ -104,20 +104,27 @@ namespace GestionCalidad.Views
 
         private Documento CrearDocumento(string enlaceDrive, string driveFileId)
         {
+            var entidadesSeleccionadas = ObtenerEntidadesSeleccionadas();
+
+            if (entidadesSeleccionadas == null || entidadesSeleccionadas.Count == 0)
+            {
+                entidadesSeleccionadas = new List<string> { "General" };
+            }
+
             return new Documento
             {
-                Nombre = txtNombre.Text,
-                Entidades = ObtenerEntidadesSeleccionadas(),
-                Tipo = (cmbTipo.SelectedItem as ComboBoxItem)?.Content.ToString(),
-                FechaDocumento = dpFechaDocumento.SelectedDate.Value,
-                Version = txtVersion.Text,
-                AreaDependencia = txtAreaDependencia.Text,
-                Descripcion = txtDescripcion.Text,
+                Nombre = string.IsNullOrWhiteSpace(txtNombre.Text) ? "Sin nombre" : txtNombre.Text,
+                Entidades = entidadesSeleccionadas,
+                Tipo = (cmbTipo.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Otros",
+                FechaDocumento = dpFechaDocumento.SelectedDate ?? DateTime.Today,
+                Version = string.IsNullOrWhiteSpace(txtVersion.Text) ? "1.0" : txtVersion.Text,
+                AreaDependencia = string.IsNullOrWhiteSpace(txtAreaDependencia.Text) ? "No especificado" : txtAreaDependencia.Text,
+                Descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text) ? "Sin descripción" : txtDescripcion.Text,
                 Usuario = txtUsuario.Text,
                 FechaSubida = DateTime.Now,
-                EnlaceDrive = enlaceDrive,
-                DriveFileId = driveFileId,
-                Estado = "Activo",
+                EnlaceDrive = enlaceDrive ?? "",
+                DriveFileId = driveFileId ?? "",
+                Estado = (cmbEstado.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Vigente",
                 Codigo = txtCodigo.Text
             };
         }
@@ -128,7 +135,8 @@ namespace GestionCalidad.Views
             if (chkSUNEDU.IsChecked == true) entidades.Add("SUNEDU");
             if (chkSINEACE.IsChecked == true) entidades.Add("SINEACE");
             if (chkICACIT.IsChecked == true) entidades.Add("ICACIT");
-            if (chkISO.IsChecked == true) entidades.Add("ISO 9001");
+            if (chkISO9001.IsChecked == true) entidades.Add("ISO 9001");
+            if (chkISO21001.IsChecked == true) entidades.Add("ISO 21001");
             return entidades;
         }
 

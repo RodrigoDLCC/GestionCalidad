@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace GestionCalidad.Models
 {
+    [BsonIgnoreExtraElements]
     public class Documento
     {
         // Identificador único
@@ -16,11 +17,11 @@ namespace GestionCalidad.Models
         public string Id { get; set; }
 
         // Metadatos del documento
-        public string Nombre { get; set; }
-        public string Tipo { get; set; }
-        public string Codigo { get; set; }
-        public string Version { get; set; }
-        public string Descripcion { get; set; }
+        public string Nombre { get; set; } = "Sin nombre";
+        public string Tipo { get; set; } = "Otros";
+        public string Codigo { get; set; } = "Sin código asignado";
+        public string Version { get; set; } = "1.0";
+        public string Descripcion { get; set; } = "Sin descripción";
 
         // Fechas relevantes
         public DateTime FechaDocumento { get; set; }
@@ -28,15 +29,15 @@ namespace GestionCalidad.Models
 
         // Clasificación y organización
         [BsonElement("Entidades")]
-        public List<string> Entidades { get; set; }
-        public string AreaDependencia { get; set; }
-        public string Estado { get; set; }
+        public List<string> Entidades { get; set; } = new List<string> { "General" };
+        public string AreaDependencia { get; set; } = "No especificado";
+        public string Estado { get; set; } = "Vigente";
 
         // Información de usuario
-        public string Usuario { get; set; }
+        public string Usuario { get; set; } = "Usuario Desconocido";
 
         // Integración con Google Drive
-        public string EnlaceDrive { get; set; }
-        public string DriveFileId { get; set; }
+        public string EnlaceDrive { get; set; } = string.Empty;
+        public string DriveFileId { get; set; } = string.Empty;
     }
 }

@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:GestionCalidad.Views"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="RegistroDocumento" Height="666" Width="679">
+        Title="Registro de Documentos - SGA-UPT" 
+        Height="700" 
+        Width="1000"
+        WindowStartupLocation="CenterScreen">
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -57,7 +60,8 @@
 
                                 <TextBlock Text="Tipo de documento:" FontWeight="Bold" Margin="0,0,0,5"/>
                                 <ComboBox x:Name="cmbTipo" Margin="0,0,0,10">
-                                    <ComboBoxItem Content="Manual" IsSelected="True"/>
+                                    <ComboBoxItem Content="Otros" IsSelected="True"/>
+                                    <ComboBoxItem Content="Manual"/>
                                     <ComboBoxItem Content="Proceso"/>
                                     <ComboBoxItem Content="Procedimiento"/>
                                     <ComboBoxItem Content="Ficha"/>
@@ -71,7 +75,7 @@
 
                             <!-- Columna derecha -->
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="Fecha del documento*:" Margin="0,0,0,5"/>
+                                <TextBlock Text="Fecha del documento:" FontWeight="Bold" Margin="0,0,0,5"/>
                                 <DatePicker x:Name="dpFechaDocumento"
                                             SelectedDate="{x:Static sys:DateTime.Today}"
                                             SelectedDateFormat="Short"
@@ -92,6 +96,12 @@
                                  AcceptsReturn="True"
                                  VerticalScrollBarVisibility="Auto"
                                  Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Estado:" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <ComboBox x:Name="cmbEstado" Margin="0,0,0,10">
+                            <ComboBoxItem Content="Vigente" IsSelected="True"/>
+                            <ComboBoxItem Content="No Vigente"/>
+                        </ComboBox>
                     </StackPanel>
                 </GroupBox>
 
@@ -101,7 +111,8 @@
                         <CheckBox Content="SUNEDU" x:Name="chkSUNEDU" Margin="5"/>
                         <CheckBox Content="SINEACE" x:Name="chkSINEACE" Margin="5"/>
                         <CheckBox Content="ICACIT" x:Name="chkICACIT" Margin="5"/>
-                        <CheckBox Content="ISO 9001 - Certhia" x:Name="chkISO" Margin="5"/>
+                        <CheckBox Content="ISO 9001" x:Name="chkISO9001" Margin="5"/>
+                        <CheckBox Content="ISO 21001" x:Name="chkISO21001" Margin="5"/>
                     </UniformGrid>
                 </GroupBox>
 
@@ -110,9 +121,6 @@
                     <StackPanel>
                         <TextBlock Text="Registrado por:" Margin="0,0,0,5"/>
                         <TextBox x:Name="txtUsuario" Margin="0,0,0,5"/>
-                        <TextBlock Text="(Nombre o correo institucional)" 
-                                   FontStyle="Italic"
-                                   Foreground="Gray"/>
                     </StackPanel>
                 </GroupBox>
 
