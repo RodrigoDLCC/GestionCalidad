@@ -25,12 +25,14 @@ namespace GestionCalidad.Views
     {
         private readonly MongoService _mongoService;
         private readonly GoogleDriveService _driveService;
+        private const string DriveFolderId = "14p_335OMbuBQ4KEhlkXdz4Rt6x6o17zA"; // ID de carpeta en Drive
 
         public RegistroDocumento()
         {
             InitializeComponent();
-            _mongoService = new MongoService();  // usar tu servicio de Mongo
+            _mongoService = new MongoService();
             _driveService = new GoogleDriveService();
+            dpFechaDocumento.SelectedDate = DateTime.Today; // Establecer fecha actual por defecto
         }
 
         private void BtnSeleccionarArchivo_Click(object sender, RoutedEventArgs e)
@@ -38,7 +40,8 @@ namespace GestionCalidad.Views
             var openFileDialog = new OpenFileDialog
             {
                 Filter = "Todos los archivos|*.*",
-                Title = "Seleccionar archivo para subir"
+                Title = "Seleccionar archivo para subir",
+                Multiselect = false
             };
 
             if (openFileDialog.ShowDialog() == true)
@@ -47,74 +50,112 @@ namespace GestionCalidad.Views
             }
         }
 
-
         private async void BtnGuardar_Click(object sender, RoutedEventArgs e)
         {
-            if (dpFechaDocumento.SelectedDate == null)
-            {
-                MessageBox.Show("Seleccione una fecha válida.");
+            if (!ValidarCampos())
                 return;
+
+            try
+            {
+                var (enlaceDrive, driveFileId) = await SubirArchivoYConfigurarPermisos();
+                var documento = CrearDocumento(enlaceDrive, driveFileId);
+
+                GuardarDocumentoEnBaseDeDatos(documento);
+
+                MostrarMensajeExito();
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MostrarError($"Error al guardar el documento: {ex.Message}");
+            }
+        }
+
+        private bool ValidarCampos()
+        {
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MostrarError("El nombre del documento es obligatorio.");
+                return false;
             }
 
-            DateTime fechaDocumento = dpFechaDocumento.SelectedDate.Value;
+            if (dpFechaDocumento.SelectedDate == null)
+            {
+                MostrarError("Seleccione una fecha válida.");
+                return false;
+            }
 
             if (string.IsNullOrWhiteSpace(txtRutaArchivo.Text) || !File.Exists(txtRutaArchivo.Text))
             {
-                MessageBox.Show("Debe seleccionar un archivo válido.");
-                return;
+                MostrarError("Debe seleccionar un archivo válido.");
+                return false;
             }
 
+            return true;
+        }
+
+        private async Task<(string enlaceDrive, string driveFileId)> SubirArchivoYConfigurarPermisos()
+        {
+            await _driveService.InicializarAsync();
+            var (webLink, fileId) = await _driveService.SubirArchivoAsync(txtRutaArchivo.Text, DriveFolderId);
+            await _driveService.HacerArchivoPublicoAsync(fileId);
+            return (webLink, fileId);
+        }
+
+        private Documento CrearDocumento(string enlaceDrive, string driveFileId)
+        {
+            return new Documento
+            {
+                Nombre = txtNombre.Text,
+                Entidades = ObtenerEntidadesSeleccionadas(),
+                Tipo = (cmbTipo.SelectedItem as ComboBoxItem)?.Content.ToString(),
+                FechaDocumento = dpFechaDocumento.SelectedDate.Value,
+                Version = txtVersion.Text,
+                AreaDependencia = txtAreaDependencia.Text,
+                Descripcion = txtDescripcion.Text,
+                Usuario = txtUsuario.Text,
+                FechaSubida = DateTime.Now,
+                EnlaceDrive = enlaceDrive,
+                DriveFileId = driveFileId,
+                Estado = "Activo",
+                Codigo = txtCodigo.Text
+            };
+        }
+
+        private List<string> ObtenerEntidadesSeleccionadas()
+        {
             var entidades = new List<string>();
             if (chkSUNEDU.IsChecked == true) entidades.Add("SUNEDU");
             if (chkSINEACE.IsChecked == true) entidades.Add("SINEACE");
             if (chkICACIT.IsChecked == true) entidades.Add("ICACIT");
             if (chkISO.IsChecked == true) entidades.Add("ISO 9001");
-
-            // 1. Subir archivo a Drive
-            string enlaceDrive = "";
-            string driveFileId = "";
-
-            try
-            {
-                await _driveService.InicializarAsync();
-                // Reemplaza esto por el ID real de tu carpeta
-                string folderId = "14p_335OMbuBQ4KEhlkXdz4Rt6x6o17zA";
-
-                var (webLink, fileId) = await _driveService.SubirArchivoAsync(txtRutaArchivo.Text, folderId);
-                
-                // Hacer el archivo público
-                await _driveService.HacerArchivoPublicoAsync(fileId);
-
-                enlaceDrive = webLink;
-                driveFileId = fileId;
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al subir a Drive: " + ex.Message);
-                return;
-            }
-
-            // 2. Crear y guardar documento
-            var doc = new Documento
-            {
-                Nombre = txtNombre.Text,
-                Entidades = entidades,
-                Tipo = (cmbTipo.SelectedItem as ComboBoxItem)?.Content.ToString(),
-                Año = fechaDocumento.Year,  // Mantienes el campo "Año" como int (opcional)
-                FechaDocumento = fechaDocumento,  // Nuevo campo DateTime
-                Area = txtArea.Text,
-                Usuario = txtUsuario.Text,
-                FechaSubida = DateTime.Now,
-                EnlaceDrive = enlaceDrive,
-                DriveFileId = driveFileId
-            };
-
-            _mongoService.Documentos.InsertOne(doc);
-
-            MessageBox.Show("Documento guardado correctamente con archivo en Google Drive.");
-            this.Close();
+            return entidades;
         }
 
+        private void GuardarDocumentoEnBaseDeDatos(Documento documento)
+        {
+            _mongoService.Documentos.InsertOne(documento);
+        }
+
+        private void MostrarMensajeExito()
+        {
+            MessageBox.Show("Documento guardado correctamente con archivo en Google Drive.",
+                          "Éxito",
+                          MessageBoxButton.OK,
+                          MessageBoxImage.Information);
+        }
+
+        private void MostrarError(string mensaje)
+        {
+            MessageBox.Show(mensaje,
+                          "Error",
+                          MessageBoxButton.OK,
+                          MessageBoxImage.Error);
+        }
+
+        private void BtnCancelar_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

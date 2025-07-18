@@ -4,51 +4,134 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionCalidad.Views"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="RegistroDocumento" Height="493" Width="805">
-    <Grid Margin="10">
+        Title="RegistroDocumento" Height="666" Width="679">
+    <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Margin="10" VerticalAlignment="Top">
+        <!-- Header -->
+        <TextBlock Text="REGISTRO DE DOCUMENTOS" 
+                   FontSize="16" 
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,15"/>
 
-            <TextBlock Text="Nombre del documento:"/>
-            <TextBox x:Name="txtNombre" Margin="0,5"/>
+        <!-- Formulario principal -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="0,0,0,10">
+                <!-- Sección: Archivo -->
+                <GroupBox Header="Archivo" FontWeight="Bold" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="Seleccionar archivo:" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <DockPanel LastChildFill="True">
+                            <Button Content="Examinar..." 
+                                    Click="BtnSeleccionarArchivo_Click" 
+                                    Width="80" 
+                                    Margin="0,0,5,0"
+                                    DockPanel.Dock="Right"/>
+                            <TextBox x:Name="txtRutaArchivo" 
+                                     IsReadOnly="True"
+                                     Padding="5"/>
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
 
-            <TextBlock Text="Entidades relacionadas:" Margin="0,10,0,0"/>
-            <StackPanel Orientation="Vertical">
-                <CheckBox Content="SUNEDU" x:Name="chkSUNEDU"/>
-                <CheckBox Content="SINEACE" x:Name="chkSINEACE"/>
-                <CheckBox Content="ICACIT" x:Name="chkICACIT"/>
-                <CheckBox Content="ISO 9001 - Certhia" x:Name="chkISO"/>
+                <!-- Sección: Metadatos -->
+                <GroupBox Header="Información del Documento" Margin="0,0,0,10">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Columna izquierda -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Nombre del documento:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBox x:Name="txtNombre" Margin="0,0,0,10"/>
+
+                                <TextBlock Text="Tipo de documento:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <ComboBox x:Name="cmbTipo" Margin="0,0,0,10">
+                                    <ComboBoxItem Content="Manual" IsSelected="True"/>
+                                    <ComboBoxItem Content="Proceso"/>
+                                    <ComboBoxItem Content="Procedimiento"/>
+                                    <ComboBoxItem Content="Ficha"/>
+                                    <ComboBoxItem Content="Mapa"/>
+                                    <ComboBoxItem Content="Matriz"/>
+                                </ComboBox>
+
+                                <TextBlock Text="Versión:" Margin="0,0,0,5"/>
+                                <TextBox x:Name="txtVersion" Margin="0,0,0,10"/>
+                            </StackPanel>
+
+                            <!-- Columna derecha -->
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Fecha del documento*:" Margin="0,0,0,5"/>
+                                <DatePicker x:Name="dpFechaDocumento"
+                                            SelectedDate="{x:Static sys:DateTime.Today}"
+                                            SelectedDateFormat="Short"
+                                            Margin="0,0,0,10"/>
+
+                                <TextBlock Text="Código (opcional):" Margin="0,0,0,5"/>
+                                <TextBox x:Name="txtCodigo" Margin="0,0,0,10"/>
+
+                                <TextBlock Text="Área/Dependencia:" Margin="0,0,0,5"/>
+                                <TextBox x:Name="txtAreaDependencia" Margin="0,0,0,10"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="Descripción (opcional):" Margin="0,0,0,5"/>
+                        <TextBox x:Name="txtDescripcion" 
+                                 Height="60" 
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Margin="0,0,0,10"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Sección: Entidades -->
+                <GroupBox Header="Entidades Relacionadas" Margin="0,0,0,10">
+                    <UniformGrid Columns="2">
+                        <CheckBox Content="SUNEDU" x:Name="chkSUNEDU" Margin="5"/>
+                        <CheckBox Content="SINEACE" x:Name="chkSINEACE" Margin="5"/>
+                        <CheckBox Content="ICACIT" x:Name="chkICACIT" Margin="5"/>
+                        <CheckBox Content="ISO 9001 - Certhia" x:Name="chkISO" Margin="5"/>
+                    </UniformGrid>
+                </GroupBox>
+
+                <!-- Sección: Usuario -->
+                <GroupBox Header="Usuario" FontWeight="Bold" Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="Registrado por:" Margin="0,0,0,5"/>
+                        <TextBox x:Name="txtUsuario" Margin="0,0,0,5"/>
+                        <TextBlock Text="(Nombre o correo institucional)" 
+                                   FontStyle="Italic"
+                                   Foreground="Gray"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Botones de acción -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="Guardar Documento" 
+                            Click="BtnGuardar_Click" 
+                            Width="150" 
+                            Height="30"
+                            Margin="5"
+                            FontWeight="Bold"/>
+
+                    <Button Content="Cancelar" 
+                            Click="BtnCancelar_Click"
+                            Width="100"
+                            Height="30"
+                            Margin="5"/>
+                </StackPanel>
             </StackPanel>
-
-            <TextBlock Text="Tipo de documento:" Margin="0,10,0,0"/>
-            <ComboBox x:Name="cmbTipo" Margin="0,5">
-                <ComboBoxItem Content="Manual"/>
-                <ComboBoxItem Content="Informe"/>
-                <ComboBoxItem Content="Procedimiento"/>
-                <ComboBoxItem Content="Guía"/>
-            </ComboBox>
-
-            <TextBlock Text="Fecha del documento:" Margin="0,10,0,0"/>
-            <DatePicker x:Name="dpFechaDocumento" Margin="0,5" SelectedDateFormat="Short"/>
-
-            <TextBlock Text="Área:"/>
-            <TextBox x:Name="txtArea" Margin="0,5"/>
-
-            <TextBlock Text="Usuario:"/>
-            <TextBox x:Name="txtUsuario" Margin="0,5"/>
-
-            <TextBlock Text="Archivo a subir:" Margin="0,10,0,0"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="txtRutaArchivo" Width="280" IsReadOnly="True"/>
-                <Button Content="..." Click="BtnSeleccionarArchivo_Click" Width="30" Margin="5,0"/>
-            </StackPanel>
-
-            <Button Content="Guardar" Click="BtnGuardar_Click" Margin="0,15,0,0" HorizontalAlignment="Center" Width="120"/>
-        </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>
