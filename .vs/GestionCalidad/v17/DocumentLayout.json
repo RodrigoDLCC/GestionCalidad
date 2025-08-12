@@ -1,12 +1,84 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\views\\listadocumentos.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:views\\listadocumentos.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\views\\listadocumentos.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:views\\listadocumentos.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\views\\dashboardprincipal.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:views\\dashboardprincipal.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|c:\\users\\geca\\desktop\\rodrigo\\gestioncalidad\\views\\dashboardprincipal.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{720D46FF-0C43-4957-874F-E231B5B032A3}|GestionCalidad.csproj|solutionrelative:views\\dashboardprincipal.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ListaDocumentos.xaml",
+              "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\ListaDocumentos.xaml",
+              "RelativeDocumentMoniker": "Views\\ListaDocumentos.xaml",
+              "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\ListaDocumentos.xaml",
+              "RelativeToolTip": "Views\\ListaDocumentos.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-08-08T14:13:20.345Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ListaDocumentos.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\ListaDocumentos.xaml.cs",
+              "RelativeDocumentMoniker": "Views\\ListaDocumentos.xaml.cs",
+              "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\ListaDocumentos.xaml.cs",
+              "RelativeToolTip": "Views\\ListaDocumentos.xaml.cs",
+              "ViewState": "AgIAAI0AAAAAAAAAAAAwwCQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-08T14:13:18.919Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DashboardPrincipal.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\DashboardPrincipal.xaml.cs",
+              "RelativeDocumentMoniker": "Views\\DashboardPrincipal.xaml.cs",
+              "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\DashboardPrincipal.xaml.cs",
+              "RelativeToolTip": "Views\\DashboardPrincipal.xaml.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAwwC8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-08T14:09:30.171Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DashboardPrincipal.xaml",
+              "DocumentMoniker": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\DashboardPrincipal.xaml",
+              "RelativeDocumentMoniker": "Views\\DashboardPrincipal.xaml",
+              "ToolTip": "C:\\Users\\GECA\\Desktop\\RODRIGO\\GestionCalidad\\Views\\DashboardPrincipal.xaml",
+              "RelativeToolTip": "Views\\DashboardPrincipal.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-08-08T14:09:20.494Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

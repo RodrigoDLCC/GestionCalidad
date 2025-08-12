@@ -20,7 +20,7 @@
         <!-- Filtros -->
         <GroupBox Header="Filtros" Grid.Row="0">
             <StackPanel Orientation="Horizontal">
-                <ComboBox x:Name="cmbFiltroTipo" Width="150" Margin="5" DisplayMemberPath="Content">
+                <ComboBox x:Name="cmbFiltroTipo" Width="150" Margin="5" >
                     <ComboBoxItem Content="Todos los tipos" IsSelected="True"/>
                     <ComboBoxItem Content="Manual"/>
                     <ComboBoxItem Content="Proceso"/>

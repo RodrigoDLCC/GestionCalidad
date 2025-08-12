@@ -21,6 +21,7 @@ namespace GestionCalidad.Views
     public partial class DetalleDocumento : Window
     {
         private readonly Documento _documento;
+        public bool DocumentoModificado { get; private set; } = false;
 
         public DetalleDocumento(Documento documento)
         {
@@ -58,15 +59,40 @@ namespace GestionCalidad.Views
             {
                 try
                 {
-                    System.Diagnostics.Process.Start(_documento.EnlaceDrive);
+                    // Solución moderna y compatible
+                    var psi = new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = _documento.EnlaceDrive,
+                        UseShellExecute = true
+                    };
+                    System.Diagnostics.Process.Start(psi);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"No se pudo abrir el enlace: {ex.Message}",
+                    MessageBox.Show($"No se pudo abrir el enlace: {ex.Message}\n\n" +
+                                   $"Puede acceder manualmente copiando este enlace:\n{_documento.EnlaceDrive}",
                                   "Error",
                                   MessageBoxButton.OK,
                                   MessageBoxImage.Error);
+
+                    // Opcional: Copiar al portapapeles
+                    try
+                    {
+                        Clipboard.SetText(_documento.EnlaceDrive);
+                        MessageBox.Show("El enlace ha sido copiado al portapapeles.",
+                                      "Información",
+                                      MessageBoxButton.OK,
+                                      MessageBoxImage.Information);
+                    }
+                    catch { }
                 }
+            }
+            else
+            {
+                MessageBox.Show("No hay un enlace válido asociado a este documento.",
+                              "Advertencia",
+                              MessageBoxButton.OK,
+                              MessageBoxImage.Warning);
             }
         }
 

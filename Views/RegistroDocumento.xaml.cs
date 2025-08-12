@@ -26,13 +26,43 @@ namespace GestionCalidad.Views
         private readonly MongoService _mongoService;
         private readonly GoogleDriveService _driveService;
         private const string DriveFolderId = "14p_335OMbuBQ4KEhlkXdz4Rt6x6o17zA"; // ID de carpeta en Drive
+        private readonly string _entidadPreseleccionada;
 
-        public RegistroDocumento()
+        public RegistroDocumento(string entidadPreseleccionada = null)
         {
             InitializeComponent();
             _mongoService = new MongoService();
             _driveService = new GoogleDriveService();
             dpFechaDocumento.SelectedDate = DateTime.Today; // Establecer fecha actual por defecto
+            _entidadPreseleccionada = entidadPreseleccionada;
+            MarcarEntidad();
+        }
+
+        private void MarcarEntidad()
+        {
+            if (string.IsNullOrWhiteSpace(_entidadPreseleccionada)) return;
+
+            switch (_entidadPreseleccionada.ToUpper())
+            {
+                case "SUNEDU":
+                    chkSUNEDU.IsChecked = true;
+                    break;
+                case "SINEACE":
+                    chkSINEACE.IsChecked = true;
+                    break;
+                case "ICACIT":
+                    chkICACIT.IsChecked = true;
+                    break;
+                case "ISO 9001":
+                    chkISO9001.IsChecked = true;
+                    break;
+                case "ISO 21001":
+                    chkISO21001.IsChecked = true;
+                    break;
+                case "TODOS":
+                default:
+                    break;
+            }
         }
 
         private void BtnSeleccionarArchivo_Click(object sender, RoutedEventArgs e)
