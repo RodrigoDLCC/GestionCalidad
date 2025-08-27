@@ -16,5 +16,6 @@ namespace GestionCalidad.Models
         public string AreaDependencia { get; set; }
         public string Estado { get; set; }
         public string EnlaceDrive { get; set; }
+        public string DriveFileId { get; set; }
     }
 }

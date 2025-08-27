@@ -18,182 +18,246 @@ using System.Windows.Shapes;
 
 namespace GestionCalidad.Views
 {
-    /// <summary>
-    /// Lógica de interacción para RegistroDocumento.xaml
-    /// </summary>
     public partial class RegistroDocumento : Window
     {
         private readonly MongoService _mongoService;
-        private readonly GoogleDriveService _driveService;
-        private const string DriveFolderId = "14p_335OMbuBQ4KEhlkXdz4Rt6x6o17zA"; // ID de carpeta en Drive
-        private readonly string _entidadPreseleccionada;
+        private readonly GoogleDriveService _googleDriveService;
+        private readonly Entidad _entidadFiltro;
+        private readonly string _usuarioId;
+        private readonly string _usuarioNombre;
+        private List<EntidadCheckbox> _entidadesDisponibles;
+        private string _archivoSeleccionado;
 
-        public RegistroDocumento(string entidadPreseleccionada = null)
+        public bool DocumentoRegistrado { get; private set; }
+
+        public RegistroDocumento(Entidad entidadFiltro, string usuarioId, string usuarioNombre)
         {
             InitializeComponent();
+
+            _entidadFiltro = entidadFiltro;
+            _usuarioId = usuarioId;
+            _usuarioNombre = usuarioNombre;
             _mongoService = new MongoService();
-            _driveService = new GoogleDriveService();
-            dpFechaDocumento.SelectedDate = DateTime.Today; // Establecer fecha actual por defecto
-            _entidadPreseleccionada = entidadPreseleccionada;
-            MarcarEntidad();
+            _googleDriveService = new GoogleDriveService();
+
+            Loaded += RegistroDocumento_Loaded;
         }
 
-        private void MarcarEntidad()
+        private async void RegistroDocumento_Loaded(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(_entidadPreseleccionada)) return;
-
-            switch (_entidadPreseleccionada.ToUpper())
+            try
             {
-                case "SUNEDU":
-                    chkSUNEDU.IsChecked = true;
-                    break;
-                case "SINEACE":
-                    chkSINEACE.IsChecked = true;
-                    break;
-                case "ICACIT":
-                    chkICACIT.IsChecked = true;
-                    break;
-                case "ISO 9001":
-                    chkISO9001.IsChecked = true;
-                    break;
-                case "ISO 21001":
-                    chkISO21001.IsChecked = true;
-                    break;
-                case "TODOS":
-                default:
-                    break;
+                await CargarEntidadesAsync();
+
+                // Si se viene de una entidad específica, preseleccionarla
+                if (_entidadFiltro != null)
+                {
+                    var entidadPreseleccionada = _entidadesDisponibles
+                        .FirstOrDefault(e => e.Entidad.Id == _entidadFiltro.Id);
+
+                    if (entidadPreseleccionada != null)
+                    {
+                        entidadPreseleccionada.IsSelected = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MostrarError($"Error al cargar los datos: {ex.Message}");
             }
         }
 
-        private void BtnSeleccionarArchivo_Click(object sender, RoutedEventArgs e)
+        private async System.Threading.Tasks.Task CargarEntidadesAsync()
+        {
+            try
+            {
+                var entidades = await _mongoService.ObtenerTodasEntidadesAsync();
+                _entidadesDisponibles = entidades
+                    .Where(e => e.Activo)
+                    .Select(e => new EntidadCheckbox { Entidad = e, IsSelected = false })
+                    .ToList();
+
+                LstEntidadesDisponibles.ItemsSource = _entidadesDisponibles;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al cargar las entidades: " + ex.Message, ex);
+            }
+        }
+
+        private void BtnExaminar_Click(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new OpenFileDialog
             {
-                Filter = "Todos los archivos|*.*",
-                Title = "Seleccionar archivo para subir",
+                Title = "Seleccionar documento",
+                Filter = "Todos los archivos (*.*)|*.*|PDF files (*.pdf)|*.pdf|Word documents (*.docx)|*.docx|Excel files (*.xlsx)|*.xlsx",
+                FilterIndex = 1,
                 Multiselect = false
             };
 
             if (openFileDialog.ShowDialog() == true)
             {
-                txtRutaArchivo.Text = openFileDialog.FileName;
+                _archivoSeleccionado = openFileDialog.FileName;
+                TxtArchivo.Text = System.IO.Path.GetFileName(_archivoSeleccionado);
             }
         }
 
-        private async void BtnGuardar_Click(object sender, RoutedEventArgs e)
+        private async void BtnSubirDocumento_Click(object sender, RoutedEventArgs e)
         {
-            if (!ValidarCampos())
+            if (!ValidarFormulario())
+            {
                 return;
+            }
 
             try
             {
-                var (enlaceDrive, driveFileId) = await SubirArchivoYConfigurarPermisos();
-                var documento = CrearDocumento(enlaceDrive, driveFileId);
+                UploadOverlay.Visibility = Visibility.Visible;
+                IsEnabled = false;
 
-                GuardarDocumentoEnBaseDeDatos(documento);
+                // 1. Subir archivo a Google Drive
+                var entidadesSeleccionadas = _entidadesDisponibles
+                    .Where(ec => ec.IsSelected)
+                    .Select(ec => ec.Entidad)
+                    .ToList();
 
-                MostrarMensajeExito();
+                if (!entidadesSeleccionadas.Any())
+                {
+                    throw new Exception("Debe seleccionar al menos una entidad");
+                }
+
+                // Usar la primera carpeta de entidad como carpeta principal
+                var folderId = entidadesSeleccionadas.First().GoogleDriveFolderId;
+
+                var (webLink, fileId) = await _googleDriveService.SubirArchivoAsync(_archivoSeleccionado, folderId);
+                await _googleDriveService.HacerArchivoPublicoAsync(fileId);
+
+                // 2. Crear documento en MongoDB
+                var documento = new Documento
+                {
+                    Nombre = TxtNombre.Text.Trim(),
+                    Codigo = TxtCodigo.Text.Trim(),
+                    Tipo = (CmbTipo.SelectedItem as ComboBoxItem)?.Content.ToString(),
+                    Descripcion = TxtDescripcion.Text.Trim(),
+                    FechaDocumento = DpFechaDocumento.SelectedDate ?? DateTime.Now,
+                    FechaSubida = DateTime.Now,
+                    FechaUltimaModificacion = DateTime.Now,
+                    AreaDependencia = TxtAreaDependencia.Text.Trim(),
+                    Estado = (CmbEstado.SelectedItem as ComboBoxItem)?.Content.ToString(),
+                    UsuarioId = _usuarioId,
+                    UsuarioNombre = _usuarioNombre,
+                    EnlaceDrive = webLink,
+                    DriveFileId = fileId,
+                    VersionActual = TxtVersion.Text.Trim(),
+                    EntidadesIds = entidadesSeleccionadas.Select(ent => ent.Id).ToList()
+                };
+
+                // 3. Crear versión inicial
+                var versionInicial = new VersionDocumento
+                {
+                    NumeroVersion = TxtVersion.Text.Trim(),
+                    DriveFileId = fileId,
+                    Cambios = TxtCambios.Text.Trim(),
+                    FechaCreacion = DateTime.Now,
+                    UsuarioId = _usuarioId,
+                    UsuarioNombre = _usuarioNombre,
+                    Comentarios = "Versión inicial",
+                    EsVersionFinal = false
+                };
+
+                documento.HistorialVersiones.Add(versionInicial);
+
+                // 4. Guardar en MongoDB
+                await _mongoService.CrearDocumentoAsync(documento);
+
+                DocumentoRegistrado = true;
+
+                MessageBox.Show("Documento registrado exitosamente!", "Éxito",
+                              MessageBoxButton.OK, MessageBoxImage.Information);
+
+                this.DialogResult = true;
                 this.Close();
             }
             catch (Exception ex)
             {
-                MostrarError($"Error al guardar el documento: {ex.Message}");
+                MostrarError($"Error al registrar el documento: {ex.Message}");
+            }
+            finally
+            {
+                UploadOverlay.Visibility = Visibility.Collapsed;
+                IsEnabled = true;
             }
         }
 
-        private bool ValidarCampos()
+        private bool ValidarFormulario()
         {
-            if (string.IsNullOrWhiteSpace(txtNombre.Text))
-            {
-                MostrarError("El nombre del documento es obligatorio.");
-                return false;
-            }
+            TxtMensajeError.Visibility = Visibility.Collapsed;
+            var errores = new List<string>();
 
-            if (dpFechaDocumento.SelectedDate == null)
-            {
-                MostrarError("Seleccione una fecha válida.");
-                return false;
-            }
+            if (string.IsNullOrWhiteSpace(TxtNombre.Text))
+                errores.Add("El nombre del documento es obligatorio");
 
-            if (string.IsNullOrWhiteSpace(txtRutaArchivo.Text) || !File.Exists(txtRutaArchivo.Text))
+            if (string.IsNullOrWhiteSpace(TxtCodigo.Text))
+                errores.Add("El código del documento es obligatorio");
+
+            if (CmbTipo.SelectedItem == null)
+                errores.Add("Debe seleccionar un tipo de documento");
+
+            if (DpFechaDocumento.SelectedDate == null)
+                errores.Add("La fecha del documento es obligatoria");
+
+            if (string.IsNullOrWhiteSpace(TxtAreaDependencia.Text))
+                errores.Add("El área/dependencia es obligatoria");
+
+            if (CmbEstado.SelectedItem == null)
+                errores.Add("Debe seleccionar un estado");
+
+            if (string.IsNullOrWhiteSpace(_archivoSeleccionado) || !File.Exists(_archivoSeleccionado))
+                errores.Add("Debe seleccionar un archivo válido");
+
+            if (string.IsNullOrWhiteSpace(TxtVersion.Text))
+                errores.Add("La versión es obligatoria");
+
+            var entidadesSeleccionadas = _entidadesDisponibles?.Count(ec => ec.IsSelected) ?? 0;
+            if (entidadesSeleccionadas == 0)
+                errores.Add("Debe seleccionar al menos una entidad");
+
+            if (errores.Any())
             {
-                MostrarError("Debe seleccionar un archivo válido.");
+                MostrarError(string.Join("\n", errores));
                 return false;
             }
 
             return true;
         }
 
-        private async Task<(string enlaceDrive, string driveFileId)> SubirArchivoYConfigurarPermisos()
-        {
-            await _driveService.InicializarAsync();
-            var (webLink, fileId) = await _driveService.SubirArchivoAsync(txtRutaArchivo.Text, DriveFolderId);
-            await _driveService.HacerArchivoPublicoAsync(fileId);
-            return (webLink, fileId);
-        }
-
-        private Documento CrearDocumento(string enlaceDrive, string driveFileId)
-        {
-            var entidadesSeleccionadas = ObtenerEntidadesSeleccionadas();
-
-            if (entidadesSeleccionadas == null || entidadesSeleccionadas.Count == 0)
-            {
-                entidadesSeleccionadas = new List<string> { "General" };
-            }
-
-            return new Documento
-            {
-                Nombre = string.IsNullOrWhiteSpace(txtNombre.Text) ? "Sin nombre" : txtNombre.Text,
-                Entidades = entidadesSeleccionadas,
-                Tipo = (cmbTipo.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Otros",
-                FechaDocumento = dpFechaDocumento.SelectedDate ?? DateTime.Today,
-                Version = string.IsNullOrWhiteSpace(txtVersion.Text) ? "1.0" : txtVersion.Text,
-                AreaDependencia = string.IsNullOrWhiteSpace(txtAreaDependencia.Text) ? "No especificado" : txtAreaDependencia.Text,
-                Descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text) ? "Sin descripción" : txtDescripcion.Text,
-                Usuario = txtUsuario.Text,
-                FechaSubida = DateTime.Now,
-                EnlaceDrive = enlaceDrive ?? "",
-                DriveFileId = driveFileId ?? "",
-                Estado = (cmbEstado.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Vigente",
-                Codigo = txtCodigo.Text
-            };
-        }
-
-        private List<string> ObtenerEntidadesSeleccionadas()
-        {
-            var entidades = new List<string>();
-            if (chkSUNEDU.IsChecked == true) entidades.Add("SUNEDU");
-            if (chkSINEACE.IsChecked == true) entidades.Add("SINEACE");
-            if (chkICACIT.IsChecked == true) entidades.Add("ICACIT");
-            if (chkISO9001.IsChecked == true) entidades.Add("ISO 9001");
-            if (chkISO21001.IsChecked == true) entidades.Add("ISO 21001");
-            return entidades;
-        }
-
-        private void GuardarDocumentoEnBaseDeDatos(Documento documento)
-        {
-            _mongoService.Documentos.InsertOne(documento);
-        }
-
-        private void MostrarMensajeExito()
-        {
-            MessageBox.Show("Documento guardado correctamente con archivo en Google Drive.",
-                          "Éxito",
-                          MessageBoxButton.OK,
-                          MessageBoxImage.Information);
-        }
-
         private void MostrarError(string mensaje)
         {
-            MessageBox.Show(mensaje,
-                          "Error",
-                          MessageBoxButton.OK,
-                          MessageBoxImage.Error);
+            TxtMensajeError.Text = mensaje;
+            TxtMensajeError.Visibility = Visibility.Visible;
         }
 
         private void BtnCancelar_Click(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = false;
             this.Close();
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            // Si se cierra con X, establecer DialogResult
+            if (this.DialogResult == null)
+            {
+                this.DialogResult = false;
+            }
+        }
+    }
+
+    // Clase auxiliar para el binding de entidades con checkbox
+    public class EntidadCheckbox
+    {
+        public Entidad Entidad { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

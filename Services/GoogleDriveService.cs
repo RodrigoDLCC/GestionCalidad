@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace GestionCalidad.Services
 {
@@ -18,33 +19,50 @@ namespace GestionCalidad.Services
         private static readonly string ApplicationName = "GestionCalidadApp";
 
         private DriveService _service;
+        private bool _initialized = false;
+        private SemaphoreSlim _initLock = new SemaphoreSlim(1, 1);
 
-        public async Task InicializarAsync()
+        public async Task EnsureInitializedAsync()
         {
-            UserCredential credential;
+            if (_initialized) return;
 
-            using (var stream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gestiongeca-credentials.json"), FileMode.Open, FileAccess.Read))
+            await _initLock.WaitAsync();
+            try
             {
-                string credPath = "token.json";
-                credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.FromStream(stream).Secrets,
-                    Scopes,
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true));
+                if (_initialized) return;
+
+                UserCredential credential;
+                string credPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "token.json");
+
+                using (var stream = new FileStream(
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gestiongeca-credentials.json"),
+                    FileMode.Open, FileAccess.Read))
+                {
+                    credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                        GoogleClientSecrets.FromStream(stream).Secrets,
+                        Scopes,
+                        "user",
+                        CancellationToken.None,
+                        new FileDataStore(credPath, true));
+                }
+
+                _service = new DriveService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential,
+                    ApplicationName = ApplicationName,
+                });
+
+                _initialized = true;
             }
-
-            _service = new DriveService(new BaseClientService.Initializer()
+            finally
             {
-                HttpClientInitializer = credential,
-                ApplicationName = ApplicationName,
-            });
+                _initLock.Release();
+            }
         }
 
         public async Task<(string WebLink, string FileId)> SubirArchivoAsync(string filePath, string folderId)
         {
-            if (_service == null)
-                await InicializarAsync();
+            await EnsureInitializedAsync();
 
             var fileMetadata = new Google.Apis.Drive.v3.Data.File()
             {
@@ -80,8 +98,7 @@ namespace GestionCalidad.Services
 
         public async Task HacerArchivoPublicoAsync(string fileId)
         {
-            if (_service == null)
-                await InicializarAsync();
+            await EnsureInitializedAsync();
 
             var permission = new Google.Apis.Drive.v3.Data.Permission
             {
@@ -90,6 +107,57 @@ namespace GestionCalidad.Services
             };
 
             await _service.Permissions.Create(permission, fileId).ExecuteAsync();
+        }
+
+
+        public async Task<MemoryStream> DescargarArchivoAsync(string fileId)
+        {
+            await EnsureInitializedAsync();
+
+            var request = _service.Files.Get(fileId);
+            var stream = new MemoryStream();
+
+            await request.DownloadAsync(stream);
+            stream.Position = 0; // Reset stream position for reading
+
+            return stream;
+        }
+
+        public async Task<bool> EliminarArchivoAsync(string fileId)
+        {
+            await EnsureInitializedAsync();
+
+            try
+            {
+                await _service.Files.Delete(fileId).ExecuteAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<List<Google.Apis.Drive.v3.Data.File>> ListarArchivosAsync(string folderId = null)
+        {
+            await EnsureInitializedAsync();
+
+            var request = _service.Files.List();
+            request.Q = $"'{folderId}' in parents and trashed = false";
+            request.Fields = "files(id, name, mimeType, size, createdTime, modifiedTime, webViewLink)";
+
+            var result = await request.ExecuteAsync();
+            return result.Files?.ToList() ?? new List<Google.Apis.Drive.v3.Data.File>();
+        }
+
+        public async Task<Google.Apis.Drive.v3.Data.File> ObtenerArchivoAsync(string fileId)
+        {
+            await EnsureInitializedAsync();
+
+            var request = _service.Files.Get(fileId);
+            request.Fields = "id, name, mimeType, size, createdTime, modifiedTime, webViewLink";
+
+            return await request.ExecuteAsync();
         }
     }
 }

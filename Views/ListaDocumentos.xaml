@@ -5,20 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GestionCalidad.Views"
         mc:Ignorable="d"
-        Title="{Binding TituloEntidad, StringFormat='Documentos - {0}'}"
-        Height="600" 
-        Width="900"
-        WindowStartupLocation="CenterScreen">
+        Title="{Binding TituloVentana}"
+        Height="700" 
+        Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Padding" Value="5,2"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="MinWidth" Value="60"/>
+        </Style>
+    </Window.Resources>
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- Encabezado -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button x:Name="BtnVolver" Content="← Volver" Click="BtnVolver_Click" 
+                    Margin="0,0,10,0" Width="80"/>
+            <TextBlock Text="{Binding TituloEntidad}" 
+                       FontSize="18" 
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+
         <!-- Filtros -->
-        <GroupBox Header="Filtros" Grid.Row="0">
+        <GroupBox Header="Filtros" Grid.Row="1" Margin="0,0,0,10">
             <StackPanel Orientation="Horizontal">
                 <ComboBox x:Name="cmbFiltroTipo" Width="150" Margin="5" >
                     <ComboBoxItem Content="Todos los tipos" IsSelected="True"/>
@@ -28,52 +49,77 @@
                     <ComboBoxItem Content="Ficha"/>
                     <ComboBoxItem Content="Mapa"/>
                     <ComboBoxItem Content="Matriz"/>
+                    <ComboBoxItem Content="Otros"/>
                 </ComboBox>
 
                 <ComboBox x:Name="cmbFiltroEstado" Width="120" Margin="5">
                     <ComboBoxItem Content="Todos" IsSelected="True"/>
                     <ComboBoxItem Content="Vigente"/>
                     <ComboBoxItem Content="No Vigente"/>
+                    <ComboBoxItem Content="Eliminado"/>
                 </ComboBox>
 
-                <TextBox x:Name="txtBusqueda" Width="200" Margin="5"/>
+                <TextBox x:Name="txtBusqueda" Width="200" Margin="5" 
+                         KeyDown="TxtBusqueda_KeyDown"
+                         ToolTip="Buscar por nombre, descripción o código"/>
 
-                <Button Content="Filtrar" Click="BtnFiltrar_Click" Width="80" Margin="5"/>
+                <Button Content="Buscar" Click="BtnFiltrar_Click" Width="80" Margin="5"/>
                 <Button Content="Limpiar" Click="BtnLimpiarFiltros_Click" Width="80" Margin="5"/>
             </StackPanel>
         </GroupBox>
 
         <!-- Listado -->
-        <DataGrid x:Name="dgDocumentos" Grid.Row="1" Margin="0,10" 
+        <DataGrid x:Name="dgDocumentos" Grid.Row="2" Margin="0,0,0,10" 
                   AutoGenerateColumns="False" 
                   IsReadOnly="True"
                   SelectionMode="Single"
-                  SelectionUnit="FullRow">
+                  SelectionUnit="FullRow"
+                  AlternatingRowBackground="#FAFAFA"
+                  RowDetailsVisibilityMode="Collapsed">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
-                <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="100"/>
-                <DataGridTextColumn Header="Versión" Binding="{Binding Version}" Width="80"/>
-                <DataGridTextColumn Header="Fecha" Binding="{Binding FechaDocumento}" Width="100"/>
-                <DataGridTextColumn Header="Área" Binding="{Binding AreaDependencia}" Width="120"/>
-                <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="80">
+                <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="2*"/>
+                <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="0.8*"/>
+                <DataGridTextColumn Header="Versión" Binding="{Binding Version}" Width="0.5*"/>
+                <DataGridTextColumn Header="Fecha Doc." Binding="{Binding FechaDocumento}" Width="0.8*"/>
+                <DataGridTextColumn Header="Área" Binding="{Binding AreaDependencia}" Width="1*"/>
+                <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="0.7*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Estado}" Value="Vigente">
+                                    <Setter Property="Foreground" Value="Green"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Estado}" Value="No Vigente">
+                                    <Setter Property="Foreground" Value="Orange"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Estado}" Value="Eliminado">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Header="Acciones" Width="120">
+                <DataGridTemplateColumn Header="Acciones" Width="2*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Ver" 
+                                <Button Content="👁️ Ver" 
                                         Click="BtnVerDocumento_Click" 
                                         Tag="{Binding Id}"
-                                        Margin="2" Padding="5,0"/>
-                                <Button Content="Descargar" 
+                                        Style="{StaticResource ActionButtonStyle}"
+                                        ToolTip="Ver detalles del documento"/>
+                                <Button Content="📥 Descargar" 
                                         Click="BtnDescargarDocumento_Click" 
-                                        Tag="{Binding EnlaceDrive}"
-                                        Margin="2" Padding="5,0"/>
+                                        Tag="{Binding DriveFileId}"
+                                        Style="{StaticResource ActionButtonStyle}"
+                                        ToolTip="Descargar documento"/>
+                                <Button Content="✏️ Editar" 
+                                        Click="BtnEditarDocumento_Click" 
+                                        Tag="{Binding Id}"
+                                        Style="{StaticResource ActionButtonStyle}"
+                                        ToolTip="Editar metadatos del documento"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -82,9 +128,29 @@
         </DataGrid>
 
         <!-- Controles inferiores -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Nuevo Documento" Click="BtnNuevoDocumento_Click" Width="120" Margin="5"/>
-            <Button Content="Cerrar" Click="BtnCerrar_Click" Width="80" Margin="5"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock x:Name="txtContador" 
+                       Text="{Binding ElementName=dgDocumentos, Path=Items.Count, StringFormat='{}{0} documentos encontrados'}"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0"
+                       FontStyle="Italic"/>
+            <Button Content="➕ Nuevo Documento" 
+                    Click="BtnNuevoDocumento_Click" 
+                    Width="120" 
+                    Margin="5"
+                    FontWeight="Bold"/>
+            <Button Content="Cerrar" 
+                    Click="BtnCerrar_Click" 
+                    Width="80" 
+                    Margin="5"/>
         </StackPanel>
+
+        <!-- Overlay de carga -->
+        <Border x:Name="LoadingOverlay" Grid.Row="2" Background="#80000000" Visibility="Collapsed">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" Width="200" Height="20" Margin="0,0,0,10"/>
+                <TextBlock Text="Cargando documentos..." Foreground="White" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

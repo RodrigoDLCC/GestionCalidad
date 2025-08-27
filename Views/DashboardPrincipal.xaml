@@ -2,9 +2,38 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Gestión de Documentos - Oficina de Calidad" 
-        Height="1000" Width="1000"
+        Height="700" Width="900"
         WindowStartupLocation="CenterScreen"
         Background="#F5F5F5">
+
+    <Window.Resources>
+        <Style x:Key="EntityButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="15"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E3F2FD"/>
+                    <Setter Property="BorderBrush" Value="#2196F3"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -14,105 +43,97 @@
         </Grid.RowDefinitions>
 
         <!-- Encabezado -->
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="GESTIÓN DE DOCUMENTOS" 
-                       FontSize="22" 
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="SISTEMA DE GESTIÓN DOCUMENTAL" 
+                       FontSize="24" 
                        FontWeight="Bold"
                        HorizontalAlignment="Center"
-                       Margin="0,0,0,10"/>
+                       Foreground="#1976D2"
+                       Margin="0,0,0,5"/>
+
+            <TextBlock Text="Oficina de Gestión de la Calidad" 
+                       FontSize="16"
+                       HorizontalAlignment="Center"
+                       Foreground="#757575"
+                       Margin="0,0,0,15"/>
 
             <TextBlock x:Name="txtUsuario" 
                        HorizontalAlignment="Right"
-                       FontStyle="Italic"/>
+                       FontStyle="Italic"
+                       Foreground="#616161"/>
         </StackPanel>
 
-        <!-- Panel de entidades -->
-        <UniformGrid Grid.Row="1" Columns="2" Rows="3">
-            <!-- Todos los documentos -->
-            <Button x:Name="btnTodos" 
-                    Style="{StaticResource EntityButtonStyle}"
-                    Tag="TODOS"
-                    Click="EntityButton_Click">
-                <StackPanel>
-                    <Image Source="/Resources/all.png" Width="100" Height="100"/>
-                    <TextBlock Text="General" 
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button>
+        <!-- Panel de entidades - Ahora se cargará dinámicamente -->
+        <ItemsControl x:Name="EntitiesItemsControl" Grid.Row="1">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="2" Rows="3"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Style="{StaticResource EntityButtonStyle}"
+                            Tag="{Binding Id}"
+                            Click="EntityButton_Click"
+                            Margin="15">
+                        <StackPanel>
+                            <Image Source="{Binding ImagenUrl}" 
+                                   Width="120" 
+                                   Height="120"
+                                   Stretch="Uniform"/>
+                            <TextBlock Text="{Binding Nombre}" 
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,10,0,0"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"/>
+                            <TextBlock Text="{Binding Descripcion}" 
+                                       HorizontalAlignment="Center"
+                                       Margin="0,5,0,0"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       MaxWidth="150"
+                                       Foreground="#757575"
+                                       FontSize="12"/>
+                        </StackPanel>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
-            <!-- SUNEDU -->
-            <Button x:Name="btnSunedu" 
-                    Style="{StaticResource EntityButtonStyle}"
-                    Tag="SUNEDU"
-                    Click="EntityButton_Click">
-                <StackPanel>
-                    <Image Source="/Resources/sunedu.png" Width="150" Height="150"/>
-                    <TextBlock Text="SUNEDU" 
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-
-            <!-- SINEACE -->
-            <Button x:Name="btnSineace" 
-                    Style="{StaticResource EntityButtonStyle}"
-                    Tag="SINEACE"
-                    Click="EntityButton_Click">
-                <StackPanel>
-                    <Image Source="/Resources/sineace.png" Width="150" Height="150"/>
-                    <TextBlock Text="SINEACE" 
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-
-            <!-- ICACIT -->
-            <Button x:Name="btnIcacit" 
-                    Style="{StaticResource EntityButtonStyle}"
-                    Tag="ICACIT"
-                    Click="EntityButton_Click">
-                <StackPanel>
-                    <Image Source="/Resources/icacit.png" Width="150" Height="150"/>
-                    <TextBlock Text="ICACIT" 
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-
-            <!-- ISO 9001 -->
-            <Button x:Name="btnIso9001" 
-                    Style="{StaticResource EntityButtonStyle}"
-                    Tag="ISO 9001"
-                    Click="EntityButton_Click">
-                <StackPanel>
-                    <Image Source="/Resources/iso9001.png" Width="150" Height="150"/>
-                    <TextBlock Text="ISO 9001" 
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-
-            <!-- ISO 21001 -->
-            <Button x:Name="btnIso21001" 
-                    Style="{StaticResource EntityButtonStyle}"
-                    Tag="ISO 21001"
-                    Click="EntityButton_Click">
-                <StackPanel>
-                    <Image Source="/Resources/iso21001.png" Width="150" Height="150"/>
-                    <TextBlock Text="ISO 21001" 
-                               FontWeight="Bold"
-                               HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-        </UniformGrid>
+        <!-- Botón para todos los documentos -->
+        <Button x:Name="btnTodos" 
+                Grid.Row="1"
+                Style="{StaticResource EntityButtonStyle}"
+                Tag="TODOS"
+                Click="EntityButton_Click"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Margin="0,0,0,20"
+                Width="200">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/Resources/all.png" Width="24" Height="24" Margin="0,0,10,0"/>
+                <TextBlock Text="Ver Todos los Documentos" 
+                           FontWeight="Bold"/>
+            </StackPanel>
+        </Button>
 
         <!-- Pie de página -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="Cerrar Sesión" 
                     Click="BtnCerrarSesion_Click"
                     Margin="5"
-                    Width="120" Cursor=""/>
+                    Width="120"
+                    Background="#F44336"
+                    Foreground="White"/>
         </StackPanel>
+
+        <!-- Progress bar para cuando se cargan las entidades -->
+        <Border x:Name="LoadingOverlay" Grid.Row="1" Background="#80000000" Visibility="Collapsed">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" Width="200" Height="20" Margin="0,0,0,10"/>
+                <TextBlock Text="Cargando entidades..." Foreground="White" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

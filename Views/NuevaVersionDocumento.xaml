@@ -1,0 +1,63 @@
+﻿<Window x:Class="GestionCalidad.Views.NuevaVersionDocumento"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Registrar Nueva Versión"
+        Height="400"
+        Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Encabezado -->
+        <TextBlock Grid.Row="0" Text="REGISTRAR NUEVA VERSIÓN" 
+                   FontSize="16" FontWeight="Bold" Margin="0,0,0,15"/>
+
+        <!-- Contenido -->
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Documento:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <TextBlock x:Name="TxtDocumento" Margin="0,0,0,15" TextWrapping="Wrap"/>
+
+            <TextBlock Text="*Nueva versión:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <TextBox x:Name="TxtNuevaVersion" Margin="0,0,0,15" 
+                     ToolTip="Formato: número de versión (ej: 1.0, 2.1)"/>
+
+            <TextBlock Text="*Cambios en esta versión:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <TextBox x:Name="TxtCambios" Height="60" AcceptsReturn="True" 
+                     VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"
+                     ToolTip="Describa detalladamente los cambios en esta versión (mínimo 10 caracteres)"/>
+
+            <TextBlock Text="*Archivo de la nueva versión:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                <TextBox x:Name="TxtArchivo" Width="300" Margin="0,0,10,0" IsReadOnly="True"/>
+                <Button Content="Examinar..." Click="BtnExaminar_Click" Width="80"/>
+            </StackPanel>
+
+            <TextBlock x:Name="TxtMensajeError" Foreground="Red" TextWrapping="Wrap" 
+                       Visibility="Collapsed" Margin="0,10,0,0"/>
+        </StackPanel>
+
+        <!-- Botones -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="📁 Subir Versión" Click="BtnSubirVersion_Click" 
+                    Width="120" Margin="0,0,10,0" FontWeight="Bold" Background="#4CAF50" Foreground="White"/>
+            <Button Content="Cancelar" Click="BtnCancelar_Click" Width="80"/>
+        </StackPanel>
+
+        <!-- Overlay de progreso -->
+        <Border x:Name="UploadOverlay" Grid.Row="1" Background="#80000000" Visibility="Collapsed">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" Width="200" Height="20" Margin="0,0,0,10"/>
+                <TextBlock Text="Subiendo nueva versión..." Foreground="White" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

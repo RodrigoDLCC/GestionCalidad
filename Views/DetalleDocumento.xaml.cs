@@ -1,104 +1,304 @@
 ﻿using GestionCalidad.Models;
+using GestionCalidad.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace GestionCalidad.Views
 {
-    /// <summary>
-    /// Lógica de interacción para DetalleDocumento.xaml
-    /// </summary>
     public partial class DetalleDocumento : Window
     {
         private readonly Documento _documento;
-        public bool DocumentoModificado { get; private set; } = false;
+        private readonly MongoService _mongoService;
+        private VersionDocumento _versionSeleccionada;
 
-        public DetalleDocumento(Documento documento)
+        public bool DocumentoModificado { get; private set; }
+
+        public DetalleDocumento(Documento documento, MongoService mongoService = null)
         {
             InitializeComponent();
-            _documento = documento;
+
+            _documento = documento ?? throw new ArgumentNullException(nameof(documento));
+            _mongoService = mongoService ?? new MongoService();
+
+            DataContext = _documento;
             CargarDatosDocumento();
         }
 
         private void CargarDatosDocumento()
         {
-            // Información básica
-            txtNombre.Text = _documento.Nombre;
-            txtDescripcion.Text = _documento.Descripcion ?? "Sin descripción";
-            txtCodigo.Text = _documento.Codigo ?? "No especificado";
-            txtTipo.Text = _documento.Tipo;
-            txtVersion.Text = _documento.Version;
-            txtEstado.Text = _documento.Estado;
+            try
+            {
+                // Cargar selector de versiones
+                CargarVersiones();
 
-            // Fechas y ubicación
-            txtFechaDocumento.Text = _documento.FechaDocumento.ToString("dd/MM/yyyy");
-            txtFechaSubida.Text = _documento.FechaSubida.ToString("dd/MM/yyyy HH:mm");
-            txtAreaDependencia.Text = _documento.AreaDependencia;
-            txtUsuario.Text = _documento.Usuario;
-
-            // Entidades relacionadas
-            itemsEntidades.ItemsSource = _documento.Entidades;
-
-            // Enlace a Drive
-            txtEnlaceDrive.Text = _documento.EnlaceDrive;
+                // Cargar información de entidades
+                CargarEntidades();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar los detalles: {ex.Message}",
+                              "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void BtnAbrirDrive_Click(object sender, RoutedEventArgs e)
+        private async void CargarEntidades()
         {
-            if (!string.IsNullOrEmpty(_documento.EnlaceDrive))
+            try
             {
-                try
+                if (_documento.EntidadesIds != null && _documento.EntidadesIds.Any())
                 {
-                    // Solución moderna y compatible
-                    var psi = new System.Diagnostics.ProcessStartInfo
+                    var nombresEntidades = new List<string>();
+
+                    foreach (var entidadId in _documento.EntidadesIds)
+                    {
+                        var entidad = await _mongoService.ObtenerEntidadPorIdAsync(entidadId);
+                        if (entidad != null)
+                        {
+                            nombresEntidades.Add(entidad.Nombre);
+                        }
+                    }
+
+                    TxtEntidades.Text = string.Join(", ", nombresEntidades);
+                }
+                else
+                {
+                    TxtEntidades.Text = "No especificado";
+                }
+            }
+            catch (Exception ex)
+            {
+                TxtEntidades.Text = "Error al cargar entidades";
+                Console.WriteLine($"Error al cargar entidades: {ex.Message}");
+            }
+        }
+
+        private void CargarVersiones()
+        {
+            try
+            {
+                CmbVersiones.Items.Clear();
+
+                if (_documento.HistorialVersiones != null && _documento.HistorialVersiones.Any())
+                {
+                    // Ordenar versiones de más reciente a más antigua
+                    var versionesOrdenadas = _documento.HistorialVersiones
+                        .OrderByDescending(v => v.FechaCreacion)
+                        .ToList();
+
+                    foreach (var version in versionesOrdenadas)
+                    {
+                        CmbVersiones.Items.Add(version.NumeroVersion);
+                    }
+
+                    // Seleccionar la versión actual por defecto
+                    var versionActual = versionesOrdenadas.FirstOrDefault(v =>
+                        v.NumeroVersion == _documento.VersionActual) ?? versionesOrdenadas.First();
+
+                    CmbVersiones.SelectedItem = versionActual.NumeroVersion;
+                    MostrarInformacionVersion(versionActual);
+                }
+                else
+                {
+                    // Si no hay historial, mostrar versión actual
+                    var versionActual = new VersionDocumento
+                    {
+                        NumeroVersion = _documento.VersionActual,
+                        Cambios = "Versión inicial",
+                        FechaCreacion = _documento.FechaSubida,
+                        UsuarioNombre = _documento.UsuarioNombre
+                    };
+
+                    CmbVersiones.Items.Add(_documento.VersionActual);
+                    CmbVersiones.SelectedIndex = 0;
+                    MostrarInformacionVersion(versionActual);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar las versiones: {ex.Message}",
+                              "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void MostrarInformacionVersion(VersionDocumento version)
+        {
+            _versionSeleccionada = version;
+
+            TxtCambiosVersion.Text = version.Cambios ?? "Sin cambios registrados";
+            TxtFechaVersion.Text = version.FechaCreacion.ToString("dd/MM/yyyy HH:mm");
+            TxtCreadorVersion.Text = version.UsuarioNombre ?? _documento.UsuarioNombre;
+        }
+
+        private void CmbVersiones_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CmbVersiones.SelectedItem == null) return;
+
+            var numeroVersion = CmbVersiones.SelectedItem.ToString();
+            var version = _documento.HistorialVersiones?
+                .FirstOrDefault(v => v.NumeroVersion == numeroVersion);
+
+            if (version != null)
+            {
+                MostrarInformacionVersion(version);
+            }
+        }
+
+        private async void BtnDescargarVersion_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_versionSeleccionada == null)
+                {
+                    MessageBox.Show("No hay versión seleccionada para descargar.",
+                                  "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var googleDriveService = new GoogleDriveService();
+                await googleDriveService.EnsureInitializedAsync();
+
+                var archivoInfo = await googleDriveService.ObtenerArchivoAsync(_versionSeleccionada.DriveFileId);
+                var extension = ObtenerExtensionDesdeMimeType(archivoInfo.MimeType);
+
+                var nombreArchivo = $"{_documento.Nombre}_v{_versionSeleccionada.NumeroVersion}{extension}";
+
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    FileName = nombreArchivo,
+                    Filter = $"Archivos {extension.ToUpper().TrimStart('.')}|*{extension}|Todos los archivos (*.*)|*.*"
+                };
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    using (var fileStream = await googleDriveService.DescargarArchivoAsync(_versionSeleccionada.DriveFileId))
+                    using (var outputStream = new System.IO.FileStream(saveFileDialog.FileName, System.IO.FileMode.Create))
+                    {
+                        await fileStream.CopyToAsync(outputStream);
+                    }
+
+                    MessageBox.Show("Versión descargada correctamente.",
+                                  "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al descargar la versión: {ex.Message}",
+                              "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private string ObtenerExtensionDesdeMimeType(string mimeType)
+        {
+            var mimeToExtension = new Dictionary<string, string>
+            {
+                {"application/pdf", ".pdf"},
+                {"application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".docx"},
+                {"application/msword", ".doc"},
+                {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlsx"},
+                {"application/vnd.ms-excel", ".xls"},
+                {"application/vnd.openxmlformats-officedocument.presentationml.presentation", ".pptx"},
+                {"application/vnd.ms-powerpoint", ".ppt"},
+                {"text/plain", ".txt"},
+                {"image/jpeg", ".jpg"},
+                {"image/png", ".png"},
+                {"image/gif", ".gif"},
+                {"application/zip", ".zip"},
+                {"application/x-rar-compressed", ".rar"}
+            };
+
+            return mimeToExtension.ContainsKey(mimeType) ? mimeToExtension[mimeType] : "";
+        }
+
+        private void BtnVerEnDrive_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(_documento.EnlaceDrive))
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                     {
                         FileName = _documento.EnlaceDrive,
                         UseShellExecute = true
-                    };
-                    System.Diagnostics.Process.Start(psi);
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("No hay enlace disponible para este documento.",
+                                  "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al abrir en Google Drive: {ex.Message}",
+                              "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void BtnNuevaVersion_Click(object sender, RoutedEventArgs e)
+        {
+            var nuevaVersionWindow = new NuevaVersionDocumento(_documento, _mongoService);
+            nuevaVersionWindow.Owner = this;
+
+            if (nuevaVersionWindow.ShowDialog() == true)
+            {
+                try
+                {
+                    // Mostrar indicador de carga
+                    LoadingOverlay.Visibility = Visibility.Visible;
+
+                    // Recargar solo el historial de versiones desde la BD
+                    var documentoActualizado = await _mongoService.ObtenerDocumentoPorIdAsync(_documento.Id);
+                    if (documentoActualizado != null && documentoActualizado.HistorialVersiones != null)
+                    {
+                        _documento.HistorialVersiones = documentoActualizado.HistorialVersiones;
+                        _documento.VersionActual = documentoActualizado.VersionActual;
+                        _documento.FechaUltimaModificacion = documentoActualizado.FechaUltimaModificacion;
+
+                        // Actualizar el combobox de versiones
+                        CargarVersiones();
+
+                        DocumentoModificado = true;
+
+                        MessageBox.Show("Nueva versión registrada exitosamente.",
+                                      "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"No se pudo abrir el enlace: {ex.Message}\n\n" +
-                                   $"Puede acceder manualmente copiando este enlace:\n{_documento.EnlaceDrive}",
-                                  "Error",
-                                  MessageBoxButton.OK,
-                                  MessageBoxImage.Error);
-
-                    // Opcional: Copiar al portapapeles
-                    try
-                    {
-                        Clipboard.SetText(_documento.EnlaceDrive);
-                        MessageBox.Show("El enlace ha sido copiado al portapapeles.",
-                                      "Información",
-                                      MessageBoxButton.OK,
-                                      MessageBoxImage.Information);
-                    }
-                    catch { }
+                    MessageBox.Show($"Error al actualizar la lista de versiones: {ex.Message}",
+                                  "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    LoadingOverlay.Visibility = Visibility.Collapsed;
                 }
             }
-            else
-            {
-                MessageBox.Show("No hay un enlace válido asociado a este documento.",
-                              "Advertencia",
-                              MessageBoxButton.OK,
-                              MessageBoxImage.Warning);
-            }
+        }
+
+        private void BtnVolver_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+            this.Close();
         }
 
         private void BtnCerrar_Click(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = true;
             this.Close();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            // Si se cierra con X, establecer DialogResult
+            if (this.DialogResult == null)
+            {
+                this.DialogResult = true;
+            }
         }
     }
 }

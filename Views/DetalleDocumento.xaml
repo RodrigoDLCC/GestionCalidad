@@ -3,13 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GestionCalidad.Views"
         mc:Ignorable="d"
-        Title="Detalle del Documento" 
-        Height="550" 
-        Width="700"
+        Title="Detalle del Documento"
+        Height="600"
+        Width="800"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize">
+
+    <Window.Resources>
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+
+        <Style x:Key="ValueStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+    </Window.Resources>
 
     <Grid Margin="15">
         <Grid.RowDefinitions>
@@ -19,111 +31,126 @@
         </Grid.RowDefinitions>
 
         <!-- Encabezado -->
-        <TextBlock Text="DETALLE DEL DOCUMENTO" 
-                   FontSize="16" 
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,15"/>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+            <Button x:Name="BtnVolver" Content="← Volver" Click="BtnVolver_Click" 
+                    Margin="0,0,10,0" Width="80"/>
+            <TextBlock Text="DETALLE DEL DOCUMENTO" 
+                       FontSize="16" 
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
 
-        <!-- Contenido principal -->
+        <!-- Contenido principal con ScrollViewer -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-                <!-- Sección: Información básica -->
-                <GroupBox Header="Información básica" Margin="0,0,0,10">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="10"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                        <!-- Columna izquierda -->
-                        <StackPanel Grid.Column="0" Grid.RowSpan="4">
-                            <TextBlock Text="Nombre:" FontWeight="Bold" Margin="0,0,0,2"/>
-                            <TextBlock x:Name="txtNombre" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                            <TextBlock Text="Descripción:" FontWeight="Bold" Margin="0,0,0,2"/>
-                            <TextBlock x:Name="txtDescripcion" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                <!-- Información básica -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Nombre:" Style="{StaticResource LabelStyle}"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Nombre}" Style="{StaticResource ValueStyle}"/>
 
-                            <TextBlock Text="Código:" FontWeight="Bold" Margin="0,0,0,2"/>
-                            <TextBlock x:Name="txtCodigo" Margin="0,0,0,10"/>
-                        </StackPanel>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Código:" Style="{StaticResource LabelStyle}"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Codigo}" Style="{StaticResource ValueStyle}"/>
 
-                        <!-- Columna derecha -->
-                        <StackPanel Grid.Column="2" Grid.RowSpan="4">
-                            <TextBlock Text="Tipo:" FontWeight="Bold" Margin="0,0,0,2"/>
-                            <TextBlock x:Name="txtTipo" Margin="0,0,0,10"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Tipo:" Style="{StaticResource LabelStyle}"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Tipo}" Style="{StaticResource ValueStyle}"/>
 
-                            <TextBlock Text="Versión:" FontWeight="Bold" Margin="0,0,0,2"/>
-                            <TextBlock x:Name="txtVersion" Margin="0,0,0,10"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Descripción:" Style="{StaticResource LabelStyle}"/>
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Descripcion}" Style="{StaticResource ValueStyle}"/>
 
-                            <TextBlock Text="Estado:" FontWeight="Bold" Margin="0,0,0,2"/>
-                            <TextBlock x:Name="txtEstado" Margin="0,0,0,10"/>
-                        </StackPanel>
-                    </Grid>
-                </GroupBox>
+                <!-- Selector de versión -->
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Versión:" Style="{StaticResource LabelStyle}"/>
+                <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
+                    <ComboBox x:Name="CmbVersiones" Width="100" Margin="0,0,10,10"
+                              SelectionChanged="CmbVersiones_SelectionChanged"/>
+                    <TextBlock Text="{Binding VersionActual}" FontWeight="Bold" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                <!-- Sección: Fechas y ubicación -->
-                <GroupBox Header="Fechas y ubicación" Margin="0,0,0,10">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="10"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                <!-- Información de la versión seleccionada -->
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Cambios en esta versión:" Style="{StaticResource LabelStyle}"/>
+                <TextBlock Grid.Row="5" Grid.Column="1" x:Name="TxtCambiosVersion" Style="{StaticResource ValueStyle}"/>
 
-                        <StackPanel Grid.Column="0">
-                            <TextBlock Text="Fecha del documento:" FontWeight="Bold" Margin="0,0,0,2"/>
-                            <TextBlock x:Name="txtFechaDocumento" Margin="0,0,0,10"/>
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="Fecha de versión:" Style="{StaticResource LabelStyle}"/>
+                <TextBlock Grid.Row="6" Grid.Column="1" x:Name="TxtFechaVersion" Style="{StaticResource ValueStyle}"/>
 
-                            <TextBlock Text="Fecha de subida:" FontWeight="Bold" Margin="0,0,0,2"/>
-                            <TextBlock x:Name="txtFechaSubida" Margin="0,0,0,10"/>
-                        </StackPanel>
+                <TextBlock Grid.Row="7" Grid.Column="0" Text="Creado por:" Style="{StaticResource LabelStyle}"/>
+                <TextBlock Grid.Row="7" Grid.Column="1" x:Name="TxtCreadorVersion" Style="{StaticResource ValueStyle}"/>
 
-                        <StackPanel Grid.Column="2">
-                            <TextBlock Text="Área/Dependencia:" FontWeight="Bold" Margin="0,0,0,2"/>
-                            <TextBlock x:Name="txtAreaDependencia" Margin="0,0,0,10"/>
+                <!-- Información adicional -->
+                <TextBlock Grid.Row="8" Grid.Column="0" Text="Área/Dependencia:" Style="{StaticResource LabelStyle}"/>
+                <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding AreaDependencia}" Style="{StaticResource ValueStyle}"/>
 
-                            <TextBlock Text="Usuario:" FontWeight="Bold" Margin="0,0,0,2"/>
-                            <TextBlock x:Name="txtUsuario" Margin="0,0,0,10"/>
-                        </StackPanel>
-                    </Grid>
-                </GroupBox>
+                <TextBlock Grid.Row="9" Grid.Column="0" Text="Estado:" Style="{StaticResource LabelStyle}"/>
+                <TextBlock Grid.Row="9" Grid.Column="1" Text="{Binding Estado}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource ValueStyle}">
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Estado}" Value="Vigente">
+                                    <Setter Property="Foreground" Value="Green"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Estado}" Value="No Vigente">
+                                    <Setter Property="Foreground" Value="Orange"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Estado}" Value="Eliminado">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
 
-                <!-- Sección: Entidades relacionadas -->
-                <GroupBox Header="Entidades relacionadas" Margin="0,0,0,10">
-                    <ItemsControl x:Name="itemsEntidades">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <CheckBox Content="{Binding}" IsChecked="True" IsEnabled="False" Margin="2"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </GroupBox>
 
-                <!-- Sección: Enlace a Drive -->
-                <GroupBox Header="Archivo en Google Drive">
-                    <StackPanel>
-                        <TextBlock Text="Enlace al documento:" FontWeight="Bold" Margin="0,0,0,5"/>
-                        <TextBlock x:Name="txtEnlaceDrive" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                        <Button Content="Abrir en Google Drive" 
-                                Click="BtnAbrirDrive_Click" 
-                                HorizontalAlignment="Left"
-                                Padding="10,3"/>
-                    </StackPanel>
-                </GroupBox>
-            </StackPanel>
+                <TextBlock Grid.Row="10" Grid.Column="0" Text="Entidades relacionadas:" Style="{StaticResource LabelStyle}"/>
+                <TextBlock Grid.Row="10" Grid.Column="1" x:Name="TxtEntidades" Style="{StaticResource ValueStyle}"/>
+            </Grid>
         </ScrollViewer>
 
+        <!-- Overlay de carga -->
+        <Border x:Name="LoadingOverlay" Grid.RowSpan="3" Background="#80000000" Visibility="Collapsed">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" Width="200" Height="20" Margin="0,0,0,10"/>
+                <TextBlock Text="Cargando..." Foreground="White" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
         <!-- Botones de acción -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <Button Content="Cerrar" Click="BtnCerrar_Click" Width="100" Margin="5"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="📥 Descargar esta versión" 
+                    Click="BtnDescargarVersion_Click" 
+                    Width="150" 
+                    Margin="0,0,10,0"
+                    ToolTip="Descargar la versión seleccionada"/>
+            <Button Content="🔄 Nueva Versión" 
+                    Click="BtnNuevaVersion_Click" 
+                    Width="120" 
+                    Margin="0,0,10,0"
+                    ToolTip="Subir una nueva versión de este documento"/>
+            <Button Content="📋 Ver en Google Drive" 
+                    Click="BtnVerEnDrive_Click" 
+                    Width="140" 
+                    Margin="0,0,10,0"
+                    ToolTip="Abrir en Google Drive"/>
+            <Button Content="Cerrar" 
+                    Click="BtnCerrar_Click" 
+                    Width="80"/>
         </StackPanel>
     </Grid>
 </Window>

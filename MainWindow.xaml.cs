@@ -24,12 +24,12 @@ namespace GestionCalidad
 
         private void BtnAbrirRegistro_Click(object sender, RoutedEventArgs e)
         {
-            var ventana = new RegistroDocumento();
+            var ventana = new RegistroDocumento(null, "1", "Rodrigo");
             ventana.ShowDialog();
         }
         private void BtnAbrirListado_Click(object sender, RoutedEventArgs e)
         {
-            var ventana = new DashboardPrincipal("Rodrigo");
+            var ventana = new DashboardPrincipal("1","Rodrigo");
             ventana.ShowDialog();
         }
     }

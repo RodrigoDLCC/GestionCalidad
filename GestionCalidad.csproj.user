@@ -8,10 +8,16 @@
     <Compile Update="Views\DetalleDocumento.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\EditarDocumento.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\ListaDocumentos.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\LoginWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\NuevaVersionDocumento.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\RegistroDocumento.xaml.cs">

@@ -3,143 +3,198 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GestionCalidad.Views"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Registro de Documentos - SGA-UPT" 
-        Height="700" 
-        Width="1000"
-        WindowStartupLocation="CenterScreen">
+        Title="Registrar Nuevo Documento"
+        Height="700"
+        Width="800"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+
+        <Style x:Key="RequiredLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource LabelStyle}">
+            <Setter Property="Foreground" Value="Red"/>
+            <Setter Property="ToolTip" Value="Campo obligatorio"/>
+        </Style>
+
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="MinWidth" Value="80"/>
+        </Style>
+    </Window.Resources>
+
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <TextBlock Text="REGISTRO DE DOCUMENTOS" 
-                   FontSize="16" 
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,15"/>
+        <!-- Encabezado -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+            <TextBlock Text="REGISTRAR NUEVO DOCUMENTO" 
+                       FontSize="16" 
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
 
-        <!-- Formulario principal -->
+        <!-- Contenido principal con ScrollViewer -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="0,0,0,10">
-                <!-- Sección: Archivo -->
-                <GroupBox Header="Archivo" FontWeight="Bold" Margin="0,0,0,10">
-                    <StackPanel>
-                        <TextBlock Text="Seleccionar archivo:" FontWeight="Bold" Margin="0,0,0,5"/>
-                        <DockPanel LastChildFill="True">
-                            <Button Content="Examinar..." 
-                                    Click="BtnSeleccionarArchivo_Click" 
-                                    Width="80" 
-                                    Margin="0,0,5,0"
-                                    DockPanel.Dock="Right"/>
-                            <TextBox x:Name="txtRutaArchivo" 
-                                     IsReadOnly="True"
-                                     Padding="5"/>
-                        </DockPanel>
-                    </StackPanel>
-                </GroupBox>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <!-- Sección: Metadatos -->
-                <GroupBox Header="Información del Documento" Margin="0,0,0,10">
-                    <StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="10"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                            <!-- Columna izquierda -->
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Nombre del documento:" FontWeight="Bold" Margin="0,0,0,5"/>
-                                <TextBox x:Name="txtNombre" Margin="0,0,0,10"/>
+                <!-- Información básica -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="*Nombre del documento:" Style="{StaticResource RequiredLabelStyle}"/>
+                <TextBox Grid.Row="0" Grid.Column="1" x:Name="TxtNombre" Style="{StaticResource TextBoxStyle}"/>
 
-                                <TextBlock Text="Tipo de documento:" FontWeight="Bold" Margin="0,0,0,5"/>
-                                <ComboBox x:Name="cmbTipo" Margin="0,0,0,10">
-                                    <ComboBoxItem Content="Otros" IsSelected="True"/>
-                                    <ComboBoxItem Content="Manual"/>
-                                    <ComboBoxItem Content="Proceso"/>
-                                    <ComboBoxItem Content="Procedimiento"/>
-                                    <ComboBoxItem Content="Ficha"/>
-                                    <ComboBoxItem Content="Mapa"/>
-                                    <ComboBoxItem Content="Matriz"/>
-                                </ComboBox>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="*Código:" Style="{StaticResource RequiredLabelStyle}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtCodigo" Style="{StaticResource TextBoxStyle}"/>
 
-                                <TextBlock Text="Versión:" Margin="0,0,0,5"/>
-                                <TextBox x:Name="txtVersion" Margin="0,0,0,10"/>
-                            </StackPanel>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="*Tipo:" Style="{StaticResource RequiredLabelStyle}"/>
+                <ComboBox Grid.Row="2" Grid.Column="1" x:Name="CmbTipo" Style="{StaticResource ComboBoxStyle}">
+                    <ComboBoxItem Content="Manual"/>
+                    <ComboBoxItem Content="Proceso"/>
+                    <ComboBoxItem Content="Procedimiento"/>
+                    <ComboBoxItem Content="Ficha"/>
+                    <ComboBoxItem Content="Mapa"/>
+                    <ComboBoxItem Content="Matriz"/>
+                    <ComboBoxItem Content="Otros"/>
+                </ComboBox>
 
-                            <!-- Columna derecha -->
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Fecha del documento:" FontWeight="Bold" Margin="0,0,0,5"/>
-                                <DatePicker x:Name="dpFechaDocumento"
-                                            SelectedDate="{x:Static sys:DateTime.Today}"
-                                            SelectedDateFormat="Short"
-                                            Margin="0,0,0,10"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Descripción:" Style="{StaticResource LabelStyle}"/>
+                <TextBox Grid.Row="3" Grid.Column="1" x:Name="TxtDescripcion" 
+                         Style="{StaticResource TextBoxStyle}" 
+                         AcceptsReturn="True"
+                         Height="60"
+                         VerticalScrollBarVisibility="Auto"/>
 
-                                <TextBlock Text="Código (opcional):" Margin="0,0,0,5"/>
-                                <TextBox x:Name="txtCodigo" Margin="0,0,0,10"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="*Fecha del documento:" Style="{StaticResource RequiredLabelStyle}"/>
+                <DatePicker Grid.Row="4" Grid.Column="1" x:Name="DpFechaDocumento" 
+                           Margin="0,0,0,10" 
+                           SelectedDate="{x:Static System:DateTime.Today}"/>
 
-                                <TextBlock Text="Área/Dependencia:" Margin="0,0,0,5"/>
-                                <TextBox x:Name="txtAreaDependencia" Margin="0,0,0,10"/>
-                            </StackPanel>
-                        </Grid>
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="*Área/Dependencia:" Style="{StaticResource RequiredLabelStyle}"/>
+                <TextBox Grid.Row="5" Grid.Column="1" x:Name="TxtAreaDependencia" Style="{StaticResource TextBoxStyle}"/>
 
-                        <TextBlock Text="Descripción (opcional):" Margin="0,0,0,5"/>
-                        <TextBox x:Name="txtDescripcion" 
-                                 Height="60" 
-                                 TextWrapping="Wrap"
-                                 AcceptsReturn="True"
-                                 VerticalScrollBarVisibility="Auto"
-                                 Margin="0,0,0,10"/>
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="*Estado:" Style="{StaticResource RequiredLabelStyle}"/>
+                <ComboBox Grid.Row="6" Grid.Column="1" x:Name="CmbEstado" Style="{StaticResource ComboBoxStyle}">
+                    <ComboBoxItem Content="Vigente" IsSelected="True"/>
+                    <ComboBoxItem Content="No Vigente"/>
+                </ComboBox>
 
-                        <TextBlock Text="Estado:" FontWeight="Bold" Margin="0,0,0,5"/>
-                            <ComboBox x:Name="cmbEstado" Margin="0,0,0,10">
-                            <ComboBoxItem Content="Vigente" IsSelected="True"/>
-                            <ComboBoxItem Content="No Vigente"/>
-                        </ComboBox>
-                    </StackPanel>
-                </GroupBox>
-
-                <!-- Sección: Entidades -->
-                <GroupBox Header="Entidades Relacionadas" Margin="0,0,0,10">
-                    <UniformGrid Columns="2">
-                        <CheckBox Content="SUNEDU" x:Name="chkSUNEDU" Margin="5"/>
-                        <CheckBox Content="SINEACE" x:Name="chkSINEACE" Margin="5"/>
-                        <CheckBox Content="ICACIT" x:Name="chkICACIT" Margin="5"/>
-                        <CheckBox Content="ISO 9001" x:Name="chkISO9001" Margin="5"/>
-                        <CheckBox Content="ISO 21001" x:Name="chkISO21001" Margin="5"/>
-                    </UniformGrid>
-                </GroupBox>
-
-                <!-- Sección: Usuario -->
-                <GroupBox Header="Usuario" FontWeight="Bold" Margin="0,0,0,15">
-                    <StackPanel>
-                        <TextBlock Text="Registrado por:" Margin="0,0,0,5"/>
-                        <TextBox x:Name="txtUsuario" Margin="0,0,0,5"/>
-                    </StackPanel>
-                </GroupBox>
-
-                <!-- Botones de acción -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Content="Guardar Documento" 
-                            Click="BtnGuardar_Click" 
-                            Width="150" 
-                            Height="30"
-                            Margin="5"
-                            FontWeight="Bold"/>
-
-                    <Button Content="Cancelar" 
-                            Click="BtnCancelar_Click"
-                            Width="100"
-                            Height="30"
-                            Margin="5"/>
+                <!-- Entidades relacionadas -->
+                <TextBlock Grid.Row="7" Grid.Column="0" Text="*Entidades relacionadas:" Style="{StaticResource RequiredLabelStyle}"/>
+                <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Vertical" Margin="0,0,0,10">
+                    <ListBox x:Name="LstEntidadesDisponibles" 
+                             Height="120"
+                             SelectionMode="Multiple"
+                             Margin="0,0,0,5">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox Content="{Binding Entidad.Nombre}" 
+                                          IsChecked="{Binding IsSelected}"
+                                          Margin="2"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock Text="Seleccione una o más entidades" 
+                               FontStyle="Italic" 
+                               Foreground="Gray"
+                               FontSize="11"/>
                 </StackPanel>
-            </StackPanel>
+
+                <!-- Selección de archivo -->
+                <TextBlock Grid.Row="8" Grid.Column="0" Text="*Archivo:" Style="{StaticResource RequiredLabelStyle}"/>
+                <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBox x:Name="TxtArchivo" 
+                             Width="300" 
+                             Margin="0,0,10,0" 
+                             IsReadOnly="True"
+                             Style="{StaticResource TextBoxStyle}"/>
+                    <Button Content="Examinar..." 
+                            Click="BtnExaminar_Click"
+                            Width="80"/>
+                </StackPanel>
+
+                <!-- Información de versión -->
+                <TextBlock Grid.Row="9" Grid.Column="0" Text="*Versión:" Style="{StaticResource RequiredLabelStyle}"/>
+                <TextBox Grid.Row="9" Grid.Column="1" x:Name="TxtVersion" 
+                         Text="1.0" 
+                         Style="{StaticResource TextBoxStyle}"
+                         Width="100"
+                         HorizontalAlignment="Left"/>
+
+                <TextBlock Grid.Row="10" Grid.Column="0" Text="Cambios en esta versión:" Style="{StaticResource LabelStyle}"/>
+                <TextBox Grid.Row="10" Grid.Column="1" x:Name="TxtCambios" 
+                         Style="{StaticResource TextBoxStyle}" 
+                         AcceptsReturn="True"
+                         Height="60"
+                         VerticalScrollBarVisibility="Auto"
+                         Text="Versión inicial"/>
+
+                <!-- Mensajes de validación -->
+                <TextBlock Grid.Row="11" Grid.Column="1" x:Name="TxtMensajeError" 
+                           Foreground="Red" 
+                           Margin="0,10,0,0"
+                           TextWrapping="Wrap"
+                           Visibility="Collapsed"/>
+            </Grid>
         </ScrollViewer>
+
+        <!-- Botones de acción -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="📁 Subir Documento" 
+                    Click="BtnSubirDocumento_Click" 
+                    Style="{StaticResource ButtonStyle}"
+                    FontWeight="Bold"
+                    Background="#4CAF50"
+                    Foreground="White"/>
+            <Button Content="Cancelar" 
+                    Click="BtnCancelar_Click" 
+                    Style="{StaticResource ButtonStyle}"/>
+        </StackPanel>
+
+        <!-- Overlay de progreso -->
+        <Border x:Name="UploadOverlay" Grid.Row="1" Background="#80000000" Visibility="Collapsed">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" Width="200" Height="20" Margin="0,0,0,10"/>
+                <TextBlock Text="Subiendo documento..." Foreground="White" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
