@@ -63,6 +63,10 @@
               "target": "Package",
               "version": "[1.68.0.1869, )"
             },
+            "Microsoft.Identity.Client": {
+              "target": "Package",
+              "version": "[4.76.0, )"
+            },
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[3.4.3, )"

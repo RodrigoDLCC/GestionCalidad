@@ -12,9 +12,9 @@ TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR
 C:\Users\GECA\Desktop\RODRIGO\GestionCalidad\App.xaml
 8-755602958
 
-2097643630
-2121155929989
+221927262688
+214-1354310983
 MainWindow.xaml;Views\DashboardPrincipal.xaml;Views\DetalleDocumento.xaml;Views\EditarDocumento.xaml;Views\ListaDocumentos.xaml;Views\LoginWindow.xaml;Views\NuevaVersionDocumento.xaml;Views\RegistroDocumento.xaml;
 
-False
+True
 

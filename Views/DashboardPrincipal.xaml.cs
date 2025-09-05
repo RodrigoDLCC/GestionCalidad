@@ -10,17 +10,25 @@ namespace GestionCalidad.Views
 {
     public partial class DashboardPrincipal : Window
     {
-        private string _usuarioActual;
+        private string _usuarioNombre;
         private string _usuarioId;
         private MongoService _mongoService;
         private List<Entidad> _entidades;
 
-        public DashboardPrincipal(string usuarioId, string nombreUsuario)
+        public DashboardPrincipal(string usuarioId, string usuarioNombre)
         {
             InitializeComponent();
+
+            if (string.IsNullOrEmpty(usuarioId) || string.IsNullOrEmpty(usuarioNombre))
+            {
+                MessageBox.Show("Error: Credenciales de usuario inválidas.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                this.Close();
+                return;
+            }
+
             _usuarioId = usuarioId;
-            _usuarioActual = nombreUsuario;
-            txtUsuario.Text = $"Usuario: {_usuarioActual}";
+            _usuarioNombre = usuarioNombre;
+            txtUsuario.Text = $"Usuario: {_usuarioNombre}";
 
             // Inicializar servicios
             _mongoService = new MongoService();
@@ -48,12 +56,6 @@ namespace GestionCalidad.Views
 
                     LoadingOverlay.Visibility = Visibility.Collapsed;
                 }), DispatcherPriority.Background);
-                //PRUEBAS
-                //MessageBox.Show($"Total entidades: {_entidades.Count}");
-                //foreach (var e in _entidades)
-                //{
-                //    Console.WriteLine($"{e.Id} - {e.Nombre}");
-                //}
             }
             catch (Exception ex)
             {
@@ -84,7 +86,7 @@ namespace GestionCalidad.Views
             }
 
             // Abrir ventana de lista de documentos
-            var listaDocumentos = new ListaDocumentos(entidadSeleccionada, _usuarioId, _usuarioActual);
+            var listaDocumentos = new ListaDocumentos(entidadSeleccionada, _usuarioId, _usuarioNombre);
             listaDocumentos.Show();
             this.Hide();
         }

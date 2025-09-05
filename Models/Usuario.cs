@@ -14,10 +14,15 @@ namespace GestionCalidad.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        public string Username { get; set; }
-
-        public string PasswordHash { get; set; }  // Guarda hash de la contraseña (nunca texto plano)
-
-        public string Rol { get; set; }           // Ej: "admin", "editor", "lector"
+        public string GoogleId { get; set; }
+        public string Email { get; set; }
+        public string Nombre { get; set; }
+        public string Apellido { get; set; }
+        public string NombreCompleto { get; set; }
+        public string FotoUrl { get; set; }
+        public string Rol { get; set; } = "Usuario"; // Usuario, Administrador
+        public bool Activo { get; set; } = true;
+        public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        public DateTime UltimoAcceso { get; set; } = DateTime.Now;
     }
 }
