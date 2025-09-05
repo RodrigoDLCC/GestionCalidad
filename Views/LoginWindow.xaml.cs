@@ -36,7 +36,7 @@ namespace GestionCalidad.Views
             await IniciarSesion(true);
         }
 
-        private async System.Threading.Tasks.Task IniciarSesion(bool modoPrueba)
+        private async Task IniciarSesion(bool modoPrueba)
         {
             try
             {
@@ -79,19 +79,19 @@ namespace GestionCalidad.Views
             }
         }
 
-        private async System.Threading.Tasks.Task<bool> LoginModoPrueba()
+        private async Task<bool> LoginModoPrueba()
         {
             try
             {
-                // Simular login para testing
+                // login testing
                 var usuarioPrueba = new Models.Usuario
                 {
                     GoogleId = "test_123456",
-                    Email = "rodrigo@universidad.edu.pe",
+                    Email = "rodrigo@upt.edu.pe",
                     Nombre = "Rodrigo",
-                    Apellido = "Perez",
-                    NombreCompleto = "Rodrigo Perez",
-                    FotoUrl = "https://example.com/photo.jpg",
+                    Apellido = "Choque",
+                    NombreCompleto = "Rodrigo Choque",
+                    FotoUrl = "",
                     Rol = "Administrador"
                 };
 
@@ -121,7 +121,6 @@ namespace GestionCalidad.Views
             this.Close();
         }
 
-        // Permitir arrastrar la ventana
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)

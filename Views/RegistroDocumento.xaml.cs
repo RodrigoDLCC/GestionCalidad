@@ -67,7 +67,7 @@ namespace GestionCalidad.Views
             }
         }
 
-        private async System.Threading.Tasks.Task CargarEntidadesAsync()
+        private async Task CargarEntidadesAsync()
         {
             try
             {
@@ -99,6 +99,12 @@ namespace GestionCalidad.Views
             {
                 _archivoSeleccionado = openFileDialog.FileName;
                 TxtArchivo.Text = System.IO.Path.GetFileName(_archivoSeleccionado);
+
+                string nombreSinExtension = System.IO.Path.GetFileNameWithoutExtension(_archivoSeleccionado);
+                if (string.IsNullOrWhiteSpace(TxtNombre.Text))
+                {
+                    TxtNombre.Text = nombreSinExtension;
+                }
             }
         }
 

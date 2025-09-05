@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 C:\Users\GECA\Desktop\RODRIGO\GestionCalidad\App.xaml
-8-755602958
+72132318997
 
-221927262688
+21-1484658399
 214-1354310983
-MainWindow.xaml;Views\DashboardPrincipal.xaml;Views\DetalleDocumento.xaml;Views\EditarDocumento.xaml;Views\ListaDocumentos.xaml;Views\LoginWindow.xaml;Views\NuevaVersionDocumento.xaml;Views\RegistroDocumento.xaml;
+Views\DashboardPrincipal.xaml;Views\DetalleDocumento.xaml;Views\EditarDocumento.xaml;Views\ListaDocumentos.xaml;Views\LoginWindow.xaml;Views\NuevaVersionDocumento.xaml;Views\RegistroDocumento.xaml;
 
-True
+False
 

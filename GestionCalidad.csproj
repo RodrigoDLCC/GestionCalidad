@@ -10,9 +10,11 @@
 
   <ItemGroup>
     <None Remove="Resources\all.png" />
+    <None Remove="Resources\google-logo.png" />
     <None Remove="Resources\icacit.png" />
     <None Remove="Resources\iso21001.png" />
     <None Remove="Resources\iso9001.png" />
+    <None Remove="Resources\logo.png" />
     <None Remove="Resources\sineace.png" />
     <None Remove="Resources\sunedu.png" />
   </ItemGroup>
@@ -33,6 +35,9 @@
     <Resource Include="Resources\all.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\google-logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\icacit.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -40,6 +45,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\iso9001.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\logo.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\sineace.png">

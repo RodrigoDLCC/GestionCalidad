@@ -77,16 +77,29 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
+                <!-- Selección de archivo -->                
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="*Archivo:" Style="{StaticResource RequiredLabelStyle}"/>
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBox x:Name="TxtArchivo"
+                             Width="300"
+                             Margin="0,0,10,0"
+                             IsReadOnly="True"
+                             Style="{StaticResource TextBoxStyle}"/>
+                    <Button Content="Examinar..."
+                            Click="BtnExaminar_Click"
+                            Width="80"/>
+                </StackPanel>
+                
 
                 <!-- Información básica -->
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="*Nombre del documento:" Style="{StaticResource RequiredLabelStyle}"/>
-                <TextBox Grid.Row="0" Grid.Column="1" x:Name="TxtNombre" Style="{StaticResource TextBoxStyle}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="*Nombre del documento:" Style="{StaticResource RequiredLabelStyle}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtNombre" Style="{StaticResource TextBoxStyle}"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="*Código:" Style="{StaticResource RequiredLabelStyle}"/>
-                <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtCodigo" Style="{StaticResource TextBoxStyle}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="*Código:" Style="{StaticResource RequiredLabelStyle}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" x:Name="TxtCodigo" Style="{StaticResource TextBoxStyle}"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="*Tipo:" Style="{StaticResource RequiredLabelStyle}"/>
-                <ComboBox Grid.Row="2" Grid.Column="1" x:Name="CmbTipo" Style="{StaticResource ComboBoxStyle}">
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="*Tipo:" Style="{StaticResource RequiredLabelStyle}"/>
+                <ComboBox Grid.Row="3" Grid.Column="1" x:Name="CmbTipo" Style="{StaticResource ComboBoxStyle}">
                     <ComboBoxItem Content="Manual"/>
                     <ComboBoxItem Content="Proceso"/>
                     <ComboBoxItem Content="Procedimiento"/>
@@ -96,30 +109,30 @@
                     <ComboBoxItem Content="Otros"/>
                 </ComboBox>
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Descripción:" Style="{StaticResource LabelStyle}"/>
-                <TextBox Grid.Row="3" Grid.Column="1" x:Name="TxtDescripcion" 
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Descripción:" Style="{StaticResource LabelStyle}"/>
+                <TextBox Grid.Row="4" Grid.Column="1" x:Name="TxtDescripcion" 
                          Style="{StaticResource TextBoxStyle}" 
                          AcceptsReturn="True"
                          Height="60"
                          VerticalScrollBarVisibility="Auto"/>
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="*Fecha del documento:" Style="{StaticResource RequiredLabelStyle}"/>
-                <DatePicker Grid.Row="4" Grid.Column="1" x:Name="DpFechaDocumento" 
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="*Fecha del documento:" Style="{StaticResource RequiredLabelStyle}"/>
+                <DatePicker Grid.Row="5" Grid.Column="1" x:Name="DpFechaDocumento" 
                            Margin="0,0,0,10" 
                            SelectedDate="{x:Static System:DateTime.Today}"/>
 
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="*Área/Dependencia:" Style="{StaticResource RequiredLabelStyle}"/>
-                <TextBox Grid.Row="5" Grid.Column="1" x:Name="TxtAreaDependencia" Style="{StaticResource TextBoxStyle}"/>
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="*Área/Dependencia:" Style="{StaticResource RequiredLabelStyle}"/>
+                <TextBox Grid.Row="6" Grid.Column="1" x:Name="TxtAreaDependencia" Style="{StaticResource TextBoxStyle}"/>
 
-                <TextBlock Grid.Row="6" Grid.Column="0" Text="*Estado:" Style="{StaticResource RequiredLabelStyle}"/>
-                <ComboBox Grid.Row="6" Grid.Column="1" x:Name="CmbEstado" Style="{StaticResource ComboBoxStyle}">
+                <TextBlock Grid.Row="7" Grid.Column="0" Text="*Estado:" Style="{StaticResource RequiredLabelStyle}"/>
+                <ComboBox Grid.Row="7" Grid.Column="1" x:Name="CmbEstado" Style="{StaticResource ComboBoxStyle}">
                     <ComboBoxItem Content="Vigente" IsSelected="True"/>
                     <ComboBoxItem Content="No Vigente"/>
                 </ComboBox>
 
                 <!-- Entidades relacionadas -->
-                <TextBlock Grid.Row="7" Grid.Column="0" Text="*Entidades relacionadas:" Style="{StaticResource RequiredLabelStyle}"/>
-                <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Vertical" Margin="0,0,0,10">
+                <TextBlock Grid.Row="8" Grid.Column="0" Text="*Entidades relacionadas:" Style="{StaticResource RequiredLabelStyle}"/>
+                <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Vertical" Margin="0,0,0,10">
                     <ListBox x:Name="LstEntidadesDisponibles" 
                              Height="120"
                              SelectionMode="Multiple"
@@ -136,19 +149,6 @@
                                FontStyle="Italic" 
                                Foreground="Gray"
                                FontSize="11"/>
-                </StackPanel>
-
-                <!-- Selección de archivo -->
-                <TextBlock Grid.Row="8" Grid.Column="0" Text="*Archivo:" Style="{StaticResource RequiredLabelStyle}"/>
-                <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,10">
-                    <TextBox x:Name="TxtArchivo" 
-                             Width="300" 
-                             Margin="0,0,10,0" 
-                             IsReadOnly="True"
-                             Style="{StaticResource TextBoxStyle}"/>
-                    <Button Content="Examinar..." 
-                            Click="BtnExaminar_Click"
-                            Width="80"/>
                 </StackPanel>
 
                 <!-- Información de versión -->

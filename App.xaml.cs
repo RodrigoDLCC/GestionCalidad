@@ -22,7 +22,6 @@ namespace GestionCalidad
 
                 if (sesionActiva && _authService.EstaAutenticado())
                 {
-                    // Ir directamente al dashboard principal
                     var dashboard = new DashboardPrincipal(
                         _authService.UsuarioActual.Id,
                         _authService.UsuarioActual.NombreCompleto
@@ -39,7 +38,6 @@ namespace GestionCalidad
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al iniciar la aplicación: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                // Fallback: mostrar login de todos modos
                 var loginWindow = new LoginWindow();
                 loginWindow.Show();
             }
@@ -47,7 +45,6 @@ namespace GestionCalidad
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            // Cerrar sesión al salir de la aplicación
             _authService?.Logout();
         }
     }

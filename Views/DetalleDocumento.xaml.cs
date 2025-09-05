@@ -212,21 +212,31 @@ namespace GestionCalidad.Views
             return mimeToExtension.ContainsKey(mimeType) ? mimeToExtension[mimeType] : "";
         }
 
-        private void BtnVerEnDrive_Click(object sender, RoutedEventArgs e)
+        private async void BtnVerEnDrive_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (!string.IsNullOrEmpty(_documento.EnlaceDrive))
+                if (_versionSeleccionada == null)
+                {
+                    MessageBox.Show("No hay versión seleccionada para visualizar.",
+                                  "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Obtener el enlace de visualización para la versión seleccionada
+                string enlaceVisualizacion = await ObtenerEnlaceVisualizacionAsync(_versionSeleccionada.DriveFileId);
+
+                if (!string.IsNullOrEmpty(enlaceVisualizacion))
                 {
                     System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                     {
-                        FileName = _documento.EnlaceDrive,
+                        FileName = enlaceVisualizacion,
                         UseShellExecute = true
                     });
                 }
                 else
                 {
-                    MessageBox.Show("No hay enlace disponible para este documento.",
+                    MessageBox.Show("No hay enlace disponible para esta versión.",
                                   "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
@@ -235,6 +245,61 @@ namespace GestionCalidad.Views
                 MessageBox.Show($"Error al abrir en Google Drive: {ex.Message}",
                               "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private async Task<string> ObtenerEnlaceVisualizacionAsync(string driveFileId)
+        {
+            try
+            {
+                var googleDriveService = new GoogleDriveService();
+                await googleDriveService.EnsureInitializedAsync();
+
+                // Obtener información del archivo para determinar el mejor visor
+                var archivoInfo = await googleDriveService.ObtenerArchivoAsync(driveFileId);
+
+                return ObtenerEnlacePorTipoArchivo(driveFileId, archivoInfo.MimeType);
+            }
+            catch
+            {
+                // Fallback: enlace básico de visualización
+                return $"https://drive.google.com/file/d/{driveFileId}/view";
+            }
+        }
+
+        private string ObtenerEnlacePorTipoArchivo(string driveFileId, string mimeType)
+        {
+            if (string.IsNullOrEmpty(mimeType))
+                return $"https://drive.google.com/file/d/{driveFileId}/view";
+
+            // Documentos de Google
+            if (mimeType.Contains("application/vnd.google-apps"))
+            {
+                if (mimeType.Contains("document"))
+                    return $"https://docs.google.com/document/d/{driveFileId}/edit";
+                else if (mimeType.Contains("spreadsheet"))
+                    return $"https://docs.google.com/spreadsheets/d/{driveFileId}/edit";
+                else if (mimeType.Contains("presentation"))
+                    return $"https://docs.google.com/presentation/d/{driveFileId}/edit";
+            }
+
+            // Archivos visibles directamente (PDF, imágenes, texto)
+            else if (mimeType == "application/pdf" ||
+                     mimeType.StartsWith("image/") ||
+                     mimeType.StartsWith("text/"))
+            {
+                return $"https://drive.google.com/file/d/{driveFileId}/view";
+            }
+
+            // Archivos de Office (Word, Excel, PowerPoint)
+            else if (mimeType.Contains("wordprocessingml") ||
+                     mimeType.Contains("spreadsheetml") ||
+                     mimeType.Contains("presentationml"))
+            {
+                return $"https://docs.google.com/viewer?url=https://drive.google.com/uc?id={driveFileId}";
+            }
+
+            // Para cualquier otro tipo de archivo
+            return $"https://drive.google.com/file/d/{driveFileId}/view";
         }
 
         private async void BtnNuevaVersion_Click(object sender, RoutedEventArgs e)
